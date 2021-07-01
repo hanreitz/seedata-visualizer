@@ -28,5 +28,19 @@ class DatasetService {
       contents: document.getElementById("dataset-upload").files[0],
       user_id: 1
     }
+
+    const configObj = {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dataset)
+    }
+
+    fetch(`${this.endpoint}/datasets`)
+    .then(resp => resp.json())
+    .then(dataset => {
+      console.log(dataset)
+    })
   }
 }
