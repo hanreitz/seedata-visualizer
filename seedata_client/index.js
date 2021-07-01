@@ -2,6 +2,11 @@
 const baseUrl = "http://localhost:3000"
 const datasetService = new DatasetService(baseUrl)
 
+Dataset.datasetForm.addEventListener('submit', handleDatasetSubmit)
+
 datasetService.getDatasets()
 Dataset.renderForm()
-// initializations of the application
+
+function handleDatasetSubmit(){
+  datasetService.createDataset()
+}

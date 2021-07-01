@@ -32,13 +32,12 @@ class Dataset {
 
   static renderForm(){
     Dataset.datasetForm.innerHTML += `
+      <h3>Add a New Dataset</h3>
       <form id="new-dataset-form">
-        <label for="name">Dataset name:</label>
-        <input type="text" id="name">
-        <label for="description">Brief description:</label>
-        <input type="text" id="description">
-        <label for="file-upload">Choose a CSV file:</label>
-        <input type="file" id="file-upload" accept=".csv">
+        Dataset name: <input type="text" id="dataset-name"><br><br>
+        Brief description: <input type="text" id="dataset-description"><br><br>
+        Choose a CSV file: <input type="file" id="dataset-upload" accept=".csv">
+        <input type="submit" id="create-dataset">
       </form>
     `
   }

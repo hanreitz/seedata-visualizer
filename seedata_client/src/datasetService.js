@@ -20,4 +20,13 @@ class DatasetService {
       }
     })
   }
+
+  createDataset(){
+    const dataset = {
+      name: document.getElementById("dataset-name").value,
+      description: document.getElementById("dataset-description").value,
+      contents: document.getElementById("dataset-upload").files[0],
+      user_id: 1
+    }
+  }
 }
