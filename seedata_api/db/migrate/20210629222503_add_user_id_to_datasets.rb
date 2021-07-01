@@ -1,7 +1,5 @@
 class AddUserIdToDatasets < ActiveRecord::Migration[6.1]
   def change
-    change_table :datasets do |t|
-      t.integer :user_id
-    end
+    add_column :datasets, :user_id, :integer
   end
 end
