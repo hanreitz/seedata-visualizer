@@ -8,14 +8,16 @@ class DatasetService {
 
   // Read/Index action
 
-  // fetch request to grab all existing public datasets
+  // fetch request to grab all existing datasets
 
   getDatasets() {
     fetch(`${this.endpoint}/datasets`)
     .then(resp => resp.json())
     .then(datasets => {
-      debugger
-      // this is where we switch to Dataset class to append stuff to DOM
+      for (const dataset of datasets){
+        const d = new Dataset(dataset)
+        d.addToDom()
+      }
     })
   }
 }
