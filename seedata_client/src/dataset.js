@@ -5,11 +5,10 @@ class Dataset {
   static datasetContainer = document.getElementById('dataset-container')
   static datasetForm = document.getElementById('form-container')
 
-  constructor({id, name, contents, user_id}){
+  constructor({id, name, contents}){
     this.id = id
     this.name = name
     this.contents = contents
-    this.user_id = user_id
 
     this.element = document.createElement('li')
     this.element.id = `dataset-${this.id}`
