@@ -5,9 +5,10 @@ class Dataset {
   static datasetContainer = document.getElementById('dataset-container')
   static datasetForm = document.getElementById('form-container')
 
-  constructor({id, name, contents}){
+  constructor({id, name, description, contents}){
     this.id = id
     this.name = name
+    this.description = description
     this.contents = contents
 
     this.element = document.createElement('li')
@@ -20,6 +21,7 @@ class Dataset {
     this.element.innerHTML += `
       <div>
         <h3>${this.name}</h3>
+        <p>${this.description}</p>
       </div>
     `
     return this.element
@@ -36,7 +38,7 @@ class Dataset {
         Dataset name: <input type="text" id="dataset-name"><br><br>
         Brief description: <input type="text" id="dataset-description"><br><br>
         Choose a CSV file: <input type="file" id="dataset-upload" accept=".csv"><br><br>
-        <input type="submit" id="create-dataset">
+        <input type="submit">
       </form>
     `
   }

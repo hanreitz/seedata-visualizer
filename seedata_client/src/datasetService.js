@@ -22,24 +22,21 @@ class DatasetService {
   }
 
   createDataset(){
-    const dataset = {
-      name: document.getElementById("dataset-name").value,
-      description: document.getElementById("dataset-description").value,
-      contents: document.getElementById("dataset-upload").files[0],
-    }
+    let formData = new FormData() 
+    formData.append('name', document.getElementById("dataset-name").value)
+    formData.append('description', document.getElementById("dataset-description").value)
+    formData.append('contents', document.getElementById("dataset-upload").files[0])
 
     const configObj = {
       method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dataset)
+      body: formData
     }
 
-    fetch(`${this.endpoint}/datasets`)
+    fetch(`${this.endpoint}/datasets`, configObj)
     .then(resp => resp.json())
     .then(dataset => {
-      console.log(dataset)
+      const d = new Dataset(dataset)
+      d.addToDom()
     })
   }
 }
