@@ -1,4 +1,5 @@
 class DatasetsController < ApplicationController
+  require 'csv'
   before_action :set_dataset, only: [:show, :update, :destroy]
 
   # GET /datasets
@@ -15,7 +16,10 @@ class DatasetsController < ApplicationController
 
   # POST /datasets
   def create
-    @dataset = Dataset.new(dataset_params)
+    name = params["name"]
+    description = params["description"]
+    contents = CSV.read(params["contents"].tempfile)
+    @dataset = Dataset.new(name, description, contents)
 
     if @dataset.save
       render json: @dataset, status: :created, location: @dataset
@@ -46,6 +50,6 @@ class DatasetsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def dataset_params
-      params.require(:dataset).permit(:name, :contents)
+      params.require(:dataset).permit(:name, :description, :contents)
     end
 end
