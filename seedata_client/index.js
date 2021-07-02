@@ -8,5 +8,6 @@ datasetService.getDatasets()
 Dataset.renderForm()
 
 function handleDatasetSubmit(){
+  event.preventDefault()
   datasetService.createDataset()
 }

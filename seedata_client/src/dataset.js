@@ -36,7 +36,7 @@ class Dataset {
       <form id="new-dataset-form">
         Dataset name: <input type="text" id="dataset-name"><br><br>
         Brief description: <input type="text" id="dataset-description"><br><br>
-        Choose a CSV file: <input type="file" id="dataset-upload" accept=".csv">
+        Choose a CSV file: <input type="file" id="dataset-upload" accept=".csv"><br><br>
         <input type="submit" id="create-dataset">
       </form>
     `
