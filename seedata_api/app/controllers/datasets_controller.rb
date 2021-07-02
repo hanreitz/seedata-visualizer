@@ -16,10 +16,11 @@ class DatasetsController < ApplicationController
 
   # POST /datasets
   def create
-    name = params["name"]
-    description = params["description"]
-    contents = CSV.read(params["contents"].tempfile)
-    @dataset = Dataset.new(name, description, contents)
+    @dataset = Dataset.new
+
+    @dataset.name = params["name"]
+    @dataset.description = params["description"]
+    @dataset.contents = CSV.read(params["contents"].tempfile)
 
     if @dataset.save
       render json: @dataset, status: :created, location: @dataset

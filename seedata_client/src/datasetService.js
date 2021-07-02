@@ -26,12 +26,12 @@ class DatasetService {
     formData.append('name', document.getElementById("dataset-name").value)
     formData.append('description', document.getElementById("dataset-description").value)
     formData.append('contents', document.getElementById("dataset-upload").files[0])
-
+  
     const configObj = {
       method: "POST",
       body: formData
     }
-
+    
     fetch(`${this.endpoint}/datasets`, configObj)
     .then(resp => resp.json())
     .then(dataset => {
