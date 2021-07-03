@@ -11,24 +11,21 @@ class Dataset {
     this.description = description
     this.contents = contents
 
-    this.element = document.createElement('li')
+    this.element = document.createElement('div')
     this.element.id = `dataset-${this.id}`
 
     Dataset.all.push(this)
   }
 
-  datasetListElement(){
+  datasetElement(){
     this.element.innerHTML += `
-      <div>
-        <h3>${this.name}</h3>
-        <p>${this.description}</p>
-      </div>
+      <p><strong>${this.name}</strong> - ${this.description}</p>
     `
     return this.element
   }
 
   addToDom(){
-    Dataset.datasetContainer.appendChild(this.datasetListElement())
+    Dataset.datasetContainer.appendChild(this.datasetElement())
   }
 
   static renderForm(){
