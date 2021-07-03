@@ -3,7 +3,7 @@ class Dataset {
   static all = []
 
   static datasetContainer = document.getElementById('dataset-container')
-  static datasetForm = document.getElementById('form-container')
+  static datasetForm = document.getElementById('dataset-form-container')
 
   constructor({id, name, description, contents}){
     this.id = id
