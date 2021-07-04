@@ -30,7 +30,7 @@ class Dataset {
 
   addOptionToSelect(){
     const selectDataset = document.getElementById('select-dataset')
-    selectDataset.options.add(new Option(this.name, this))
+    selectDataset.options.add(new Option(this.name, this.id))
   }
 
   static renderForm(){
