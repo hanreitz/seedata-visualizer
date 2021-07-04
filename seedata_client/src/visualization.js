@@ -33,15 +33,20 @@ class Visualization {
       <h3>Create a New Visualization</h3>
       <form id="new-visualization-form">
         Visualization name: <input type="text" id="visualization-name"><br><br>
-        Choose a dataset: <select id="select-dataset"><br><br>
+        Choose a dataset: <select id="select-dataset">
+          <option selected disabled hidden style='display: none' value=''></option>
+        </select><br><br>
+        Select a visualization type: <br><br>
+        <input type="radio" id="choose-bar-chart">Bar Chart</input><br>
+        <input type="radio" id="choose-line-graph">Line Graph</input><br>
+        <input type="radio" id="choose-pie-chart">Pie Chart</input><br>
+        <input type="radio" id="choose-data-table">Data Table</input><br><br>
         <input type="submit">
       </form>
     `
-    const selectDataset = document.getElementById('select-dataset')
-    for (i in Dataset.all) {
-      selectDataset.options[selectDataset.options.length] = new Option(Dataset.all[i], i)
-    }
   }
+
+  static renderColumnSelectForm(){}
 }
 
 // const dataset = [80, 100, 56, 120, 180, 30, 40, 120, 160]

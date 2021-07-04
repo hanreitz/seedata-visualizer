@@ -28,6 +28,11 @@ class Dataset {
     Dataset.datasetContainer.appendChild(this.datasetElement())
   }
 
+  addOptionToSelect(){
+    const selectDataset = document.getElementById('select-dataset')
+    selectDataset.options.add(new Option(this.name, this))
+  }
+
   static renderForm(){
     Dataset.datasetForm.innerHTML += `
       <h3>Add a New Dataset</h3>
