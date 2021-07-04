@@ -22,10 +22,18 @@ class VisualizationService {
   // }
 
   createVisualization(){
+    const types = document.getElementsByName('type')
+    for(let i=0; i<types.length; i++) {
+      if(types[i].checked) {
+        const type = types[i].value
+        return type
+      }
+    }
     const svg = document.getElementById('svg') // loop through and get them all
 
     const visualization = {
       name: document.getElementById('visualization-name').value,
+      type: document.getElementById(''),
       svg_specs: svg,
       dataset_id: document.getElementById('select-dataset').value
     }

@@ -5,9 +5,10 @@ class Visualization {
   static visualizationContainer = document.getElementById('visualization-container')
   static visualizationForm = document.getElementById('visualization-form-container')
 
-  constructor({id, name, svg_specs, dataset_id}){
+  constructor({id, name, type, svg_specs, dataset_id}){
     this.id = id
     this.name = name
+    this.type = type
     this.svg_specs = svg_specs
     this.datasetId = dataset_id
 
@@ -37,11 +38,13 @@ class Visualization {
         Choose a dataset: <select id="select-dataset">
           <option selected disabled hidden style='display: none' value=''></option>
         </select><br><br>
-        Select a visualization type: <br><br>
-        <input type="radio" id="choose-bar-chart">Bar Chart</input><br>
-        <input type="radio" id="choose-line-graph">Line Graph</input><br>
-        <input type="radio" id="choose-pie-chart">Pie Chart</input><br>
-        <input type="radio" id="choose-data-table">Data Table</input><br><br>
+        Select a visualization type: <select id="visualization-types">
+          <option selected disabled hidden style='display: none' value=''></option>
+          <option value="bar-chart">Bar Chart</option>
+          <option value="line-graph">Line Graph</option>
+          <option value="pie-chart">Pie Chart</option>
+          <option value="data-table">Data Table</option>
+        </select><br><br>
         <input type="submit">
       </form>
     `
