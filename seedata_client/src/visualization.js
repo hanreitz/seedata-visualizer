@@ -5,11 +5,11 @@ class Visualization {
   static visualizationContainer = document.getElementById('visualization-container')
   static visualizationForm = document.getElementById('visualization-form-container')
 
-  constructor({id, name, svgSpecs, datasetId}){
+  constructor({id, name, svg_specs, dataset_id}){
     this.id = id
     this.name = name
-    this.svgSpecs = svgSpecs
-    this.datasetId = datasetId
+    this.svg_specs = svg_specs
+    this.datasetId = dataset_id
 
     this.element = document.createElement('div')
     this.element.id = `visualization-${this.id}`
@@ -18,6 +18,7 @@ class Visualization {
   }
 
   visualizationElement(){
+    this.element.dataset.id
     this.element.innerHTML += `
       d3 stuff here
     `
@@ -47,6 +48,7 @@ class Visualization {
   }
 
   static renderColumnSelectForm(){}
+
 }
 
 // const dataset = [80, 100, 56, 120, 180, 30, 40, 120, 160]
