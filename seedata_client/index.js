@@ -11,6 +11,7 @@ addMenuItem('Create New Visualization')
 // listening for form submissions
 Dataset.datasetForm.addEventListener('submit', handleDatasetSubmit)
 Visualization.visualizationForm.addEventListener('submit', handleVisualizationSubmit)
+Visualization.visualizationSpecForm.addEventListener('submit', handleVisSpecSubmit)
 
 // showing current datasets
 datasetService.getDatasets()
@@ -18,9 +19,6 @@ datasetService.getDatasets()
 // rendering forms
 Dataset.renderForm()
 Visualization.renderForm()
-
-
-// Visualization.visualizationForm.addEventListener('submit', handleVisualizationSubmit) -- might need to be a multistep process of choosing or uploading a dataset, choosing visualization type, choosing x&y if applicable, then submitting
 
 // visualizationService.getVisualizations() ??? maybe
 
@@ -34,8 +32,13 @@ function handleDatasetSubmit(){
 
 function handleVisualizationSubmit(){
   event.preventDefault()
-  // Trigger form about x/y
-  // Handle specific form types
+  Visualization.renderSpecForm()
+  event.target.reset()
+}
+
+function handleVisSpecSubmit(){
+  event.preventDefault()
+  Visualization.renderVisualization()
   event.target.reset()
 }
 

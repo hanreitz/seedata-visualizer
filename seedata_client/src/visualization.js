@@ -4,13 +4,14 @@ class Visualization {
 
   static visualizationContainer = document.getElementById('visualization-container')
   static visualizationForm = document.getElementById('visualization-form-container')
+  static visualizationSpecForm = document.getElementById('visualization-specs-container')
 
-  constructor({id, name, type, svg_specs, dataset_id}){
+  constructor({id, name, type, svg_specs, dataset}){
     this.id = id
     this.name = name
     this.type = type
     this.svg_specs = svg_specs
-    this.datasetId = dataset_id
+    this.dataset_id = dataset.id
 
     this.element = document.createElement('div')
     this.element.id = `visualization-${this.id}`
@@ -40,7 +41,7 @@ class Visualization {
         </select><br><br>
         Select a visualization type: <select id="visualization-types">
           <option selected disabled hidden style='display: none' value=''></option>
-          <option value="bar-chart">Bar Chart</option>
+          <option value="bar-chart">Bar Graph</option>
           <option value="line-graph">Line Graph</option>
           <option value="pie-chart">Pie Chart</option>
           <option value="data-table">Data Table</option>
@@ -50,7 +51,61 @@ class Visualization {
     `
   }
 
-  static renderColumnSelectForm(){}
+  static renderSpecForm(){
+    const datasetId = parseInt(document.getElementById('select-dataset').value)
+    const type = document.getElementById('visualization-types').value
+    const dataset = Dataset.all.find(e => e.id === datasetId)
+    Visualization.visualizationSpecForm.innerHTML += `
+      <h3>Select Your Data</h3>
+      <form id="new-data-selection-form">
+        Select x (or labels): <select id="x-data">
+          <option selected disabled hidden style='display: none' value=''></option>
+        </select><br><br>
+        Select y (or data): <select id="y-data">
+          <option selected disabled hidden style='display: none' value=''></option>
+        </select><br><br>
+        <input type="hidden" id="pass_dataset_id" value=${datasetId}>
+        <input type="hidden" id="pass_type" value=${type}>
+        <input type="submit">
+      </form>
+    `
+    Visualization.renderSpecOptions(dataset,type)
+  }
+
+  static renderSpecOptions(dataset, type) {
+    const xData = document.getElementById('x-data')
+    const yData = document.getElementById('y-data')
+    const columns = dataset.contents.replaceAll('\"', '').match(/\[\[(.*?)\]/g)[0].split('[[')[1].replace(']','').replaceAll(' ','').split(',')
+
+    // Visualization.visualizationSpecForm.innerHTML += `
+    //   <input type="hidden" name="dataset_id_pass" value=${dataset.id}>
+    //   <input type="hidden" name="type_pass" value=${type}>
+    // `
+
+    if (type === 'bar-chart'){
+      for (const i in columns) {
+        xData.options.add(new Option(columns[i], i))
+        yData.options.add(new Option(columns[i], i))
+      }
+    } // } else if (type === 'line-graph'){
+
+    // } else if (type === 'pie-chart'){
+
+    // } else if (type === 'data-table'){
+   
+    // }
+    //Visualization.visualizationForm.innerHTML += `
+    
+   // `
+  }
+
+  static renderVisualization(){
+    const dataset = document.getElementById('pass_dataset_id').value
+    const type = document.getElementById('pass_type').value
+    const xChoice = document.getElementById('x-data').value
+    const yChoice = document.getElementById('y-data').value
+    debugger;
+  }
 
 }
 
