@@ -54,7 +54,7 @@ class Visualization {
   static renderSpecForm(){
     const datasetId = parseInt(document.getElementById('select-dataset').value)
     const type = document.getElementById('visualization-types').value
-    const dataset = Dataset.all.find(e => e.id === datasetId)
+    const dataset = Visualization.getDataSetFromId(datasetId)
     Visualization.visualizationSpecForm.innerHTML += `
       <h3>Select Your Data</h3>
       <form id="new-data-selection-form">
@@ -100,11 +100,34 @@ class Visualization {
   }
 
   static renderVisualization(){
-    const dataset = document.getElementById('pass_dataset_id').value
+    const datasetId = parseInt(document.getElementById('pass_dataset_id').value)
     const type = document.getElementById('pass_type').value
     const xChoice = document.getElementById('x-data').value
     const yChoice = document.getElementById('y-data').value
-    debugger;
+    const xData = Visualization.getXData(datasetId, xChoice)
+  }
+
+  static getXData(datasetId, xChoice){
+    const dataset = Visualization.getDataSetFromId(datasetId)
+    const dataArray = Visualization.makeArrayFromDataset(dataset)
+    const headers = Visualization.formatRow(dataArray, 0)
+    const xData = []
+    for (const i in dataArray){
+      xData.push(Visualization.formatRow(dataArray, i)[xChoice])
+    }
+    return xData.slice(1)
+  }
+
+  static getDataSetFromId(datasetId){
+    return Dataset.all.find(e => e.id === datasetId)
+  }
+
+  static makeArrayFromDataset(dataset){
+    return dataset.contents.replaceAll('\"', '').replace('[[', '[').split('],')
+  }
+
+  static formatRow(datasetArray, i){
+    return datasetArray[i].replace('[','').replaceAll(' ','').split(',')
   }
 
 }
