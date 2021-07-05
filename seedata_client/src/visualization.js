@@ -104,18 +104,63 @@ class Visualization {
     const type = document.getElementById('pass_type').value
     const xChoice = document.getElementById('x-data').value
     const yChoice = document.getElementById('y-data').value
-    const xData = Visualization.getXData(datasetId, xChoice)
+
+    const xData = Visualization.getData(datasetId, xChoice)
+    const xLabel = xData[0]
+    const xValues = xData.slice(1)
+
+    const yData = Visualization.getData(datasetId, yChoice)
+    const yLabel = yData[0]
+    const yValues = yData.slice(1)
+
+    if (type === 'bar-chart'){
+      Visualization.renderBarChart(xValues, yValues, xLabel, yLabel)
+    }
   }
 
-  static getXData(datasetId, xChoice){
+  static renderBarChart(xValues, yValues, xLabel, yLabel){
+    const yNumbers = []
+    for(const e of yValues){
+      yNumbers.push(parseFloat(e))
+    }
+    const svgWidth = 500, svgHeight = 300, barPadding = 5
+    const barWidth = (svgWidth/yNumbers.length)
+
+    const svg = d3.select('svg')
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(yNumbers)])
+      .range([0, svgHeight])
+
+    const barChart = svg.selectAll('rect')
+      .data(yNumbers)
+      .enter()
+      .append("rect")
+      .attr("y", function(data) {
+        return svgHeight - yScale(data)
+      })
+      .attr("height", function(data) {
+        return data
+      })
+      .attr("width", barWidth - barPadding)
+      .attr("transform", function(data, i) {
+        const translate = [barWidth * i, 0]
+        return "translate(" + translate + ")"
+      })
+    
+  }
+
+  static getData(datasetId, choice){
     const dataset = Visualization.getDataSetFromId(datasetId)
     const dataArray = Visualization.makeArrayFromDataset(dataset)
     const headers = Visualization.formatRow(dataArray, 0)
-    const xData = []
+    const data = []
     for (const i in dataArray){
-      xData.push(Visualization.formatRow(dataArray, i)[xChoice])
+      data.push(Visualization.formatRow(dataArray, i)[choice])
     }
-    return xData.slice(1)
+    return data
   }
 
   static getDataSetFromId(datasetId){
