@@ -45,6 +45,7 @@ class Visualization {
     const type = document.getElementById('visualization-types').value
     const name = document.getElementById('visualization-name').value
     const dataset = Visualization.getDataSetFromId(datasetId)
+    debugger;
     Visualization.visualizationSpecForm.innerHTML += `
       <h3>Select Your Data</h3>
       <form id="new-data-selection-form">
@@ -54,7 +55,7 @@ class Visualization {
         Select y (or data): <select id="y-data">
           <option selected disabled hidden style='display: none' value=''></option>
         </select><br><br>
-        <input type="hidden" id="pass_name" value=${name}>
+        <input type="hidden" id="pass_name" value=${name.toLowerCase().replaceAll(' ','-')}>
         <input type="hidden" id="pass_dataset_id" value=${datasetId}>
         <input type="hidden" id="pass_type" value=${type}>
         <input type="submit">
