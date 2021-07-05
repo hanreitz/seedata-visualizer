@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_04_183146) do
+ActiveRecord::Schema.define(version: 2021_07_05_041051) do
 
   create_table "datasets", force: :cascade do |t|
     t.string "name"
@@ -22,11 +22,12 @@ ActiveRecord::Schema.define(version: 2021_07_04_183146) do
 
   create_table "visualizations", force: :cascade do |t|
     t.string "name"
-    t.string "svg_specs"
     t.integer "dataset_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "type"
+    t.string "chart_type"
+    t.integer "x_choice"
+    t.integer "y_choice"
   end
 
 end

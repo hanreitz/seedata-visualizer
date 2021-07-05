@@ -21,23 +21,17 @@ class VisualizationService {
   //   })
   // }
 
-  createVisualization(){
-    const types = document.getElementsByName('type')
-    for(let i=0; i<types.length; i++) {
-      if(types[i].checked) {
-        const type = types[i].value
-        return type
-      }
-    }
-    const svg = document.getElementById('svg') // loop through and get them all
+  // Create/Post action
 
+  createVisualization(){
     const visualization = {
-      name: document.getElementById('visualization-name').value,
-      type: document.getElementById(''),
-      svg_specs: svg,
-      dataset_id: document.getElementById('select-dataset').value
+      name: document.getElementById('pass_name').value,
+      chart_type: document.getElementById('pass_type').value,
+      x_choice: parseInt(document.getElementById('x-data').value),
+      y_choice: parseInt(document.getElementById('y-data').value),
+      dataset_id: parseInt(document.getElementById('pass_dataset_id').value)
     }
-  
+
     const configObj = {
       method: "POST",
       headers: {
@@ -46,11 +40,11 @@ class VisualizationService {
       body: JSON.stringify(visualization)
     }
     
-    fetch(`${this.endpoint}/visualization`, configObj)
+    fetch(`${this.endpoint}/visualizations`, configObj)
     .then(resp => resp.json())
     .then(visualization => {
       const v = new Visualization(visualization)
-      v.addToDom()
+      v.renderVisualization()
     })
   }
 

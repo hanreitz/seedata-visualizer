@@ -38,7 +38,7 @@ function handleVisualizationSubmit(){
 
 function handleVisSpecSubmit(){
   event.preventDefault()
-  Visualization.renderVisualization()
+  visualizationService.createVisualization()
   event.target.reset()
 }
 

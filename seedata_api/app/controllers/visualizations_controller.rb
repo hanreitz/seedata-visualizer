@@ -46,6 +46,6 @@ class VisualizationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def visualization_params
-      params.require(:visualization).permit(:name, :svg_specs)
+      params.require(:visualization).permit(:name, :chart_type, :x_choice, :y_choice, :dataset_id)
     end
 end

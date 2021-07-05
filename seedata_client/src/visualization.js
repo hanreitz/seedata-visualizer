@@ -6,29 +6,18 @@ class Visualization {
   static visualizationForm = document.getElementById('visualization-form-container')
   static visualizationSpecForm = document.getElementById('visualization-specs-container')
 
-  constructor({id, name, type, svg_specs, dataset}){
+  constructor({id, name, chart_type, x_choice, y_choice, dataset_id}){
     this.id = id
     this.name = name
-    this.type = type
-    this.svg_specs = svg_specs
-    this.dataset_id = dataset.id
+    this.chart_type = chart_type
+    this.x_choice = x_choice
+    this.y_choice = y_choice
+    this.dataset_id = dataset_id
 
-    this.element = document.createElement('div')
-    this.element.id = `visualization-${this.id}`
+    this.element = document.createElement('svg')
+    this.element.id = `${this.chart_type}-${this.id}`
 
     Visualization.all.push(this)
-  }
-
-  visualizationElement(){
-    this.element.dataset.id
-    this.element.innerHTML += `
-      d3 stuff here
-    `
-    return this.element
-  }
-
-  addToDom(){
-    Visualization.visualizationContainer.appendChild(this.visualizationElement())
   }
 
   static renderForm(){
@@ -54,6 +43,7 @@ class Visualization {
   static renderSpecForm(){
     const datasetId = parseInt(document.getElementById('select-dataset').value)
     const type = document.getElementById('visualization-types').value
+    const name = document.getElementById('visualization-name').value
     const dataset = Visualization.getDataSetFromId(datasetId)
     Visualization.visualizationSpecForm.innerHTML += `
       <h3>Select Your Data</h3>
@@ -64,61 +54,49 @@ class Visualization {
         Select y (or data): <select id="y-data">
           <option selected disabled hidden style='display: none' value=''></option>
         </select><br><br>
+        <input type="hidden" id="pass_name" value=${name}>
         <input type="hidden" id="pass_dataset_id" value=${datasetId}>
         <input type="hidden" id="pass_type" value=${type}>
         <input type="submit">
       </form>
     `
-    Visualization.renderSpecOptions(dataset,type)
+    Visualization.renderSpecOptions(dataset)
   }
 
-  static renderSpecOptions(dataset, type) {
+  static renderSpecOptions(dataset) {
     const xData = document.getElementById('x-data')
     const yData = document.getElementById('y-data')
-    const columns = dataset.contents.replaceAll('\"', '').match(/\[\[(.*?)\]/g)[0].split('[[')[1].replace(']','').replaceAll(' ','').split(',')
+    const dataArray = Visualization.makeArrayFromDataset(dataset)
+    const headers = Visualization.formatRow(dataArray, 0)
 
-    // Visualization.visualizationSpecForm.innerHTML += `
-    //   <input type="hidden" name="dataset_id_pass" value=${dataset.id}>
-    //   <input type="hidden" name="type_pass" value=${type}>
-    // `
-
-    if (type === 'bar-chart'){
-      for (const i in columns) {
-        xData.options.add(new Option(columns[i], i))
-        yData.options.add(new Option(columns[i], i))
-      }
-    } // } else if (type === 'line-graph'){
-
-    // } else if (type === 'pie-chart'){
-
-    // } else if (type === 'data-table'){
-   
-    // }
-    //Visualization.visualizationForm.innerHTML += `
-    
-   // `
+    for (const i in headers) {
+      xData.options.add(new Option(headers[i], i))
+      yData.options.add(new Option(headers[i], i))
+    }
   }
 
-  static renderVisualization(){
-    const datasetId = parseInt(document.getElementById('pass_dataset_id').value)
+  renderVisualization(){
+    const name = document.getElementById('pass_name')
     const type = document.getElementById('pass_type').value
     const xChoice = document.getElementById('x-data').value
     const yChoice = document.getElementById('y-data').value
+    const datasetId = parseInt(document.getElementById('pass_dataset_id').value)
 
-    const xData = Visualization.getData(datasetId, xChoice)
+    const xData = this.getData(datasetId, xChoice)
     const xLabel = xData[0]
     const xValues = xData.slice(1)
 
-    const yData = Visualization.getData(datasetId, yChoice)
+    const yData = this.getData(datasetId, yChoice)
     const yLabel = yData[0]
     const yValues = yData.slice(1)
 
     if (type === 'bar-chart'){
-      Visualization.renderBarChart(xValues, yValues, xLabel, yLabel)
+      this.element.innerHTML += `${this.renderBarChart(xValues, yValues, xLabel, yLabel)}`
+      Visualization.visualizationContainer.appendChild(this.element)
     }
   }
 
-  static renderBarChart(xValues, yValues, xLabel, yLabel){
+  renderBarChart(xValues, yValues, xLabel, yLabel){
     const yNumbers = []
     for(const e of yValues){
       yNumbers.push(parseFloat(e))
@@ -153,11 +131,9 @@ class Visualization {
         const translate = [barWidth * i, 0]
         return "translate(" + translate + ")"
       })
-
-    return barChart
   }
 
-  static getData(datasetId, choice){
+  getData(datasetId, choice){
     const dataset = Visualization.getDataSetFromId(datasetId)
     const dataArray = Visualization.makeArrayFromDataset(dataset)
     const headers = Visualization.formatRow(dataArray, 0)
