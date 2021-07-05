@@ -123,21 +123,25 @@ class Visualization {
     for(const e of yValues){
       yNumbers.push(parseFloat(e))
     }
-    const svgWidth = 500, svgHeight = 300, barPadding = 5
+    const svgWidth = 700, svgHeight = 500, barPadding = 5
     const barWidth = (svgWidth/yNumbers.length)
 
-    const svg = d3.select('svg')
+    const svg = d3.select('#visualization-container')
+      .append('svg')
       .attr("width", svgWidth)
       .attr("height", svgHeight)
+      .attr("class", "bar-chart")
 
     const yScale = d3.scaleLinear()
       .domain([0, d3.max(yNumbers)])
       .range([0, svgHeight])
 
+    svg.append("rect").attr("x",150).attr("y",150).attr("fill","black")
     const barChart = svg.selectAll('rect')
       .data(yNumbers)
       .enter()
       .append("rect")
+      .classed("bar", true)
       .attr("y", function(data) {
         return svgHeight - yScale(data)
       })
@@ -149,7 +153,8 @@ class Visualization {
         const translate = [barWidth * i, 0]
         return "translate(" + translate + ")"
       })
-    
+
+    return barChart
   }
 
   static getData(datasetId, choice){
