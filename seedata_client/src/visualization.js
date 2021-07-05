@@ -9,13 +9,13 @@ class Visualization {
   constructor({id, name, chart_type, x_choice, y_choice, dataset_id}){
     this.id = id
     this.name = name
-    this.chart_type = chart_type
-    this.x_choice = x_choice
-    this.y_choice = y_choice
-    this.dataset_id = dataset_id
+    this.chartType = chart_type
+    this.xChoice = x_choice
+    this.yChoice = y_choice
+    this.datasetId = dataset_id
 
     this.element = document.createElement('svg')
-    this.element.id = `${this.chart_type}-${this.id}`
+    this.element.id = `${this.chartType}-${this.id}`
 
     Visualization.all.push(this)
   }
@@ -76,64 +76,58 @@ class Visualization {
   }
 
   renderVisualization(){
-    const name = document.getElementById('pass_name')
-    const type = document.getElementById('pass_type').value
-    const xChoice = document.getElementById('x-data').value
-    const yChoice = document.getElementById('y-data').value
-    const datasetId = parseInt(document.getElementById('pass_dataset_id').value)
-
-    const xData = this.getData(datasetId, xChoice)
+    Visualization.visualizationContainer.append(this.element)
+    const xData = Visualization.getData(this.datasetId, this.xChoice)
     const xLabel = xData[0]
     const xValues = xData.slice(1)
 
-    const yData = this.getData(datasetId, yChoice)
+    const yData = Visualization.getData(this.datasetId, this.yChoice)
     const yLabel = yData[0]
     const yValues = yData.slice(1)
 
-    if (type === 'bar-chart'){
-      this.element.innerHTML += `${this.renderBarChart(xValues, yValues, xLabel, yLabel)}`
-      Visualization.visualizationContainer.appendChild(this.element)
+    if (this.chartType === 'bar-chart'){
+      const yNumbers = [];
+      for(const e of yValues){
+        yNumbers.push(parseFloat(e))
+      };
+
+      const xAxisLabels = [];
+      for(const e of xValues){
+        xAxisLabels.push(e)
+      }
+      this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel)
     }
   }
 
-  renderBarChart(xValues, yValues, xLabel, yLabel){
-    const yNumbers = []
-    for(const e of yValues){
-      yNumbers.push(parseFloat(e))
-    }
-    const svgWidth = 700, svgHeight = 500, barPadding = 5
-    const barWidth = (svgWidth/yNumbers.length)
+  renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel){
+    const width = 1000
+    const height = 600
+    const barWidth = width/yNumbers.length
+    const barPadding = 5
 
-    const svg = d3.select('#visualization-container')
-      .append('svg')
-      .attr("width", svgWidth)
-      .attr("height", svgHeight)
-      .attr("class", "bar-chart")
+    const svg = d3.select(`#${this.element.id}`)
+      .attr('width', width)
+      .attr('height', height)
+      .attr('class','bar-chart');
 
     const yScale = d3.scaleLinear()
       .domain([0, d3.max(yNumbers)])
-      .range([0, svgHeight])
-
-    svg.append("rect").attr("x",150).attr("y",150).attr("fill","black")
+      .range([0, height]);
+          
     const barChart = svg.selectAll('rect')
       .data(yNumbers)
       .enter()
-      .append("rect")
-      .classed("bar", true)
-      .attr("y", function(data) {
-        return svgHeight - yScale(data)
-      })
-      .attr("height", function(data) {
-        return data
-      })
-      .attr("width", barWidth - barPadding)
-      .attr("transform", function(data, i) {
-        const translate = [barWidth * i, 0]
-        return "translate(" + translate + ")"
-      })
+      .append('rect')
+      .attr('y', d => height - yScale(d))
+      .attr('height', d => yScale(d))
+      .attr('width', barWidth - barPadding)
+      .attr('transform', function (data, i) {
+        const translate = [barWidth * i, 0];
+        return 'translate(' + translate +')';
+      });
   }
 
-  getData(datasetId, choice){
+  static getData(datasetId, choice){
     const dataset = Visualization.getDataSetFromId(datasetId)
     const dataArray = Visualization.makeArrayFromDataset(dataset)
     const headers = Visualization.formatRow(dataArray, 0)
@@ -157,32 +151,3 @@ class Visualization {
   }
 
 }
-
-// const dataset = [80, 100, 56, 120, 180, 30, 40, 120, 160]
-
-// const svgWidth = 500, svgHeight = 300, barPadding = 5
-// const barWidth = (svgWidth/dataset.length)
-
-// const svg = d3.select('svg')
-//   .attr("width", svgWidth)
-//   .attr("height", svgHeight)
-
-// const yScale = d3.scaleLinear()
-//   .domain([0, d3.max(dataset)])
-//   .range([0, svgHeight])
-
-// const barChart = svg.selectAll('rect')
-//   .data(dataset)
-//   .enter()
-//   .append("rect")
-//   .attr("y", function(d) {
-//     return svgHeight - d
-//   })
-//   .attr("height", function(d) {
-//     return d
-//   })
-//   .attr("width", barWidth - barPadding)
-//   .attr("transform", function(d,i) {
-//     const translate = [barWidth * i, 0]
-//     return "translate(" + translate + ")"
-//   })
