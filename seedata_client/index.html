@@ -9,23 +9,25 @@
 <body>
   <h1 style="text-align:center">SeeData Visualizer</h1>
 
-  <div id="menu-container">
+  <div id="menu-holder">
     <h3>Menu</h3>
+    <div id="menu-container" style="display: none">
 
+    </div>
   </div>
  
   <div id="dataset-container">
     <h3>Current Datasets</h3>
   
   </div>
-  
-  <div id="visualization-container">
-    
+
+  <div id="visualization-container" class="display-case" style="display: none">
+    <svg></svg>
   </div>
 
-  <div id="dataset-form-container"></div>
+  <div id="dataset-form-container" class="forms" style="display: none"></div>
 
-  <div id="visualization-form-container"></div>
+  <div id="visualization-form-container" class="forms" style="display: none"></div>
 
   <div id="visualization-specs-container"></div>
 

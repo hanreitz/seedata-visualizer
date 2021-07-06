@@ -14,8 +14,8 @@ class Visualization {
     this.yChoice = y_choice
     this.datasetId = dataset_id
 
-    this.element = document.createElement('svg')
-    this.element.id = `${this.chartType}-${this.id}`
+    // this.element = document.createElement('svg')
+    // this.element.id = `${this.chartType}${this.id}`
 
     Visualization.all.push(this)
   }
@@ -30,10 +30,10 @@ class Visualization {
         </select><br><br>
         Select a visualization type: <select id="visualization-types">
           <option selected disabled hidden style='display: none' value=''></option>
-          <option value="bar-chart">Bar Graph</option>
-          <option value="line-graph">Line Graph</option>
-          <option value="pie-chart">Pie Chart</option>
-          <option value="data-table">Data Table</option>
+          <option value="bar">Bar Graph</option>
+          <option value="line">Line Graph</option>
+          <option value="pie">Pie Chart</option>
+          <option value="table">Data Table</option>
         </select><br><br>
         <input type="submit">
       </form>
@@ -45,7 +45,6 @@ class Visualization {
     const type = document.getElementById('visualization-types').value
     const name = document.getElementById('visualization-name').value
     const dataset = Visualization.getDataSetFromId(datasetId)
-    debugger;
     Visualization.visualizationSpecForm.innerHTML += `
       <h3>Select Your Data</h3>
       <form id="new-data-selection-form">
@@ -77,7 +76,6 @@ class Visualization {
   }
 
   renderVisualization(){
-    Visualization.visualizationContainer.append(this.element)
     const xData = Visualization.getData(this.datasetId, this.xChoice)
     const xLabel = xData[0]
     const xValues = xData.slice(1)
@@ -86,7 +84,7 @@ class Visualization {
     const yLabel = yData[0]
     const yValues = yData.slice(1)
 
-    if (this.chartType === 'bar-chart'){
+    if (this.chartType === 'bar'){
       const yNumbers = [];
       for(const e of yValues){
         yNumbers.push(parseFloat(e))
@@ -101,30 +99,53 @@ class Visualization {
   }
 
   renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel){
-    const width = 1000
-    const height = 600
-    const barWidth = width/yNumbers.length
+    const width = 700
+    const height = 500
     const barPadding = 5
+    const barWidth = ((width - 50) / yNumbers.length)
+        
+    const svg = d3.select('svg')
+      .attr("width", width)
+      .attr("height", height);
+        
+    const xScale = d3.scaleBand()
+      .domain(xAxisLabels)
+      .range([0, width])
 
-    const svg = d3.select(`#${this.element.id}`)
-      .attr('width', width)
-      .attr('height', height)
-      .attr('class','bar-chart');
-
+    const xAxis = d3.axisBottom()
+      .scale(xScale)
+    
     const yScale = d3.scaleLinear()
       .domain([0, d3.max(yNumbers)])
       .range([0, height]);
-          
-    const barChart = svg.selectAll('rect')
+
+    const yAxis = d3.axisLeft()
+      .scale(yScale)
+    
+    svg.append("g")
+      .attr("transform", "translate(50, 10)")
+      .call(yAxis);
+
+    const xAxisTranslate = height - 20;
+         
+    svg.append("g")
+      .attr("transform", "translate(50, " + xAxisTranslate  +")")
+      .call(xAxis);
+    
+    const barChart = svg.selectAll("rect")
       .data(yNumbers)
       .enter()
-      .append('rect')
-      .attr('y', d => height - yScale(d))
-      .attr('height', d => yScale(d))
-      .attr('width', barWidth - barPadding)
-      .attr('transform', function (data, i) {
-        const translate = [barWidth * i, 0];
-        return 'translate(' + translate +')';
+      .append("rect")
+      .attr("y", function(d) {
+        return height - yScale(d) 
+      })
+      .attr("height", function(d) { 
+        return yScale(d); 
+      })
+      .attr("width", barWidth - barPadding)
+      .attr("transform", function (d, i) {
+        const translate = [50 + barWidth * i, -20]; 
+        return "translate("+ translate +")";
       });
   }
 
