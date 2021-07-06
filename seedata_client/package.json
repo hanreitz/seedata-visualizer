@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "tailwindcss": "^2.2.4"
+  },
+  "devDependencies": {
+    "stylelint-config-recommended": "^5.0.0"
   }
 }
