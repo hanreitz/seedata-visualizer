@@ -1,35 +1,33 @@
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/styles.css">
   <title>SeeData Visualizer</title>
 </head>
-<body class="min-h-screen bg-gray-100">
-  <div class="fixed pin z-50 overflow-auto bg-black flex">
-    <h1 style="text-align:center">SeeData Visualizer</h1>
+<body>
+  <div class="wrapper">
+    <h1>SeeData Visualizer</h1>
 
-    <div id="menu-holder">
+    <div id="menu-holder" class="menu">
       <h3>Menu</h3>
       <div id="menu-container" style="display: none">
 
       </div>
     </div>
  
-    <div id="dataset-container">
+    <div id="dataset-container" class="card">
       <h3>Current Datasets</h3>
     
     </div>
 
-    <div id="visualization-container" class="display-case" style="display: none">
+    <div id="visualization-container" class="popup" style="display: none">
       <svg></svg>
     </div>
 
-    <div id="dataset-form-container" class="forms" style="display: none"></div>
+    <div id="dataset-form-container" class="popup" style="display: none"></div>
 
-    <div id="visualization-form-container" class="forms" style="display: none"></div>
+    <div id="visualization-form-container" class="popup" style="display: none"></div>
 
-    <div id="visualization-specs-container"></div>
+    <div id="visualization-specs-container" class="popup"></div>
   </div>
 
   <script src="https://d3js.org/d3.v4.min.js"></script>
