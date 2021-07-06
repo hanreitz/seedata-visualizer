@@ -13,16 +13,19 @@ addMenuItem('Add New Dataset')
 addMenuItem('Create New Visualization')
 
 // handling menu mouseover
-menuHolder.addEventListener('mouseenter', handleMenuMouseover)
+menuHolder.addEventListener('mouseover', handleMenuMouseover)
+menuHolder.addEventListener('mouseout', handleMenuMouseout)
 
 // listening for menu clicks
 menuContainer.addEventListener('click', handleMenuClick)
 
 // handling menu events
 function handleMenuMouseover(){
-  if (menuContainer.style.display === "none"){
-    menuContainer.style.display === "block"
-  }
+  menuContainer.style.display = "block"
+}
+
+function handleMenuMouseout(){
+  menuContainer.style.display = "none"
 }
 
 function handleMenuClick(){
