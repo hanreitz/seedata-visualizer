@@ -52,6 +52,7 @@ function toggleBlur(){
 Dataset.datasetForm.addEventListener('submit', toggleDatasetBlur)
 Dataset.datasetForm.addEventListener('submit', handleDatasetSubmit)
 Visualization.visualizationForm.addEventListener('change', handleVisualizationSelect)
+Visualization.visualizationForm.addEventListener('submit', handleVisualizationSubmit)
 Visualization.visualizationForm.addEventListener('submit', toggleVisSubmitBlur)
 
 // functions for handling form submissions
@@ -61,16 +62,22 @@ function handleDatasetSubmit(){
   event.target.reset()
 }
 
+function toggleDatasetBlur(){
+  const blur = document.getElementById('blur')
+  blur.classList.toggle('active')
+  Dataset.datasetForm.classList.toggle('active')
+}
+
 function handleVisualizationSelect(){
   if (event.target.id === "visualization-types"){
     Visualization.renderSpecForm()
   }
 }
 
-function toggleDatasetBlur(){
-  const blur = document.getElementById('blur')
-  blur.classList.toggle('active')
-  Dataset.datasetForm.classList.toggle('active')
+function handleVisualizationSubmit(){
+  event.preventDefault()
+  visualizationService.createVisualization()
+  event.target.reset()
 }
 
 function toggleVisSubmitBlur(){

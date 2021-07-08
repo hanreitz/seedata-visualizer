@@ -44,7 +44,7 @@ class VisualizationService {
     .then(resp => resp.json())
     .then(visualization => {
       const v = new Visualization(visualization)
-      v.renderVisualization()
+      v.renderVisualization(v.name)
     })
   }
 

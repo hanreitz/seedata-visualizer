@@ -78,7 +78,14 @@ class Visualization {
     }
   }
 
-  renderVisualization(){
+  renderVisualization(name){
+    const nameArray = name.split('-')
+    const fixedNameArray = []
+    for(const word of nameArray){
+      fixedNameArray.push(word.charAt(0).toUpperCase() + word.slice(1))
+    }
+    const passName = fixedNameArray.join(' ')
+
     const xData = Visualization.getData(this.datasetId, this.xChoice)
     const xLabel = xData[0]
     const xValues = xData.slice(1)
@@ -98,7 +105,7 @@ class Visualization {
         xAxisLabels.push(e)
       }
       Visualization.toggleVisBlur()
-      this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel)
+      this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, passName)
     }
   }
 
@@ -108,15 +115,21 @@ class Visualization {
     Visualization.visualizationContainer.classList.toggle('active')
   }
 
-  renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel){
-    const width = 700
-    const height = 500
+  renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, name){
+    const margin = {left: 20, right: 20, top: 50, bottom: 50}
+    const width = 700 - margin.right - margin.left
+    const height = 500 - margin.top - margin.bottom
     const barPadding = 5
-    const barWidth = ((width - 50) / yNumbers.length)
+    const barWidth = (width / yNumbers.length)
         
     const svg = d3.select('svg')
-      .attr("width", width)
-      .attr("height", height);
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.bottom + margin.top);
+
+    const chartTitle = svg.append('text')
+      .attr("text-anchor", "middle")
+      .attr("transform", "translate(" + (width + margin.left + margin.right)/2 + "," + margin.top/2 + ")")
+      .text(name)
         
     const xScale = d3.scaleBand()
       .domain(xAxisLabels)
@@ -126,23 +139,32 @@ class Visualization {
       .scale(xScale)
     
     const yScale = d3.scaleLinear()
-      .domain([0, d3.max(yNumbers)])
+      .domain([d3.max(yNumbers), 0])
       .range([0, height]);
 
     const yAxis = d3.axisLeft()
       .scale(yScale)
     
-    svg.append("g")
-      .attr("transform", "translate(50, 10)")
-      .call(yAxis);
+    let maxw = 0;
 
-    const xAxisTranslate = height - 20;
+    const x = svg.append("g")
+      .attr("transform", "translate(" + (2*margin.left) + "," + margin.top + ")")
+      .call(yAxis)
          
-    svg.append("g")
-      .attr("transform", "translate(50, " + xAxisTranslate  +")")
-      .call(xAxis);
+    const y = svg.append("g")
+      .attr("transform", "translate(" + (2*margin.left) + "," + (height + margin.top) + ")")
+      .call(xAxis)
+      .selectAll('text')
+      .style('text-anchor', 'center')
+      .attr('dx', '-1.2em')
+      .attr('dy', '-0.5em')
+      .attr('transform', 'rotate(-90)');
     
-    const barChart = svg.selectAll("rect")
+    const barChart = svg.append('g')
+      .attr("transform", "translate(" + margin.left + "," + (margin.top + margin.bottom) + ")")
+      .attr("width", width)
+      .attr("height", height)
+      .selectAll("rect")
       .data(yNumbers)
       .enter()
       .append("rect")
@@ -154,9 +176,10 @@ class Visualization {
       })
       .attr("width", barWidth - barPadding)
       .attr("transform", function (d, i) {
-        const translate = [50 + barWidth * i, -20]; 
+        const translate = [margin.left + barPadding/2 + barWidth * i, -margin.bottom]; 
         return "translate("+ translate +")";
       });
+
   }
 
   static getData(datasetId, choice){
