@@ -66,7 +66,7 @@ h3
   max-width: 600px;
   display: block;
 }
-#popup
+#dataset-form-container
 {
   position: fixed;
   top: 40%;
@@ -80,7 +80,49 @@ h3
   opacity: 0;
   transition: 0.5s;
 }
-#popup.active
+#dataset-form-container.active
+{
+  top: 50%;
+  visibility: visible;
+  opacity: 1;
+  transition: 0.5s;
+}
+#visualization-form-container
+{
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  padding: 50px;
+  box-shadow: 0 5px 30px rgba(0,0,0,.30);
+  background: #fff;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.5s;
+}
+#visualization-form-container.active
+{
+  top: 50%;
+  visibility: visible;
+  opacity: 1;
+  transition: 0.5s;
+}
+#visualization-container
+{
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  padding: 50px;
+  box-shadow: 0 5px 30px rgba(0,0,0,.30);
+  background: #fff;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.5s;
+}
+#visualization-container.active
 {
   top: 50%;
   visibility: visible;

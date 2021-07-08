@@ -17,7 +17,6 @@ class DatasetService {
       for (const dataset of datasets){
         const d = new Dataset(dataset)
         d.addToDom()
-        d.addOptionToSelect()
       }
     })
   }
@@ -38,7 +37,6 @@ class DatasetService {
     .then(dataset => {
       const d = new Dataset(dataset)
       d.addToDom()
-      d.addOptionToSelect()
     })
   }
 }

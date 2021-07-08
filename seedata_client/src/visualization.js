@@ -21,6 +21,7 @@ class Visualization {
   }
 
   static renderForm(){
+    Visualization.visualizationForm.innerHTML = ''
     Visualization.visualizationForm.innerHTML += `
       <h3>Create a New Visualization</h3>
       <form id="new-visualization-form">
@@ -35,9 +36,11 @@ class Visualization {
           <option value="pie">Pie Chart</option>
           <option value="table">Data Table</option>
         </select><br><br>
-        <input type="submit">
       </form>
     `
+    for (const d of Dataset.all){
+      d.addOptionToSelect();
+    }
   }
 
   static renderSpecForm(){
@@ -45,7 +48,7 @@ class Visualization {
     const type = document.getElementById('visualization-types').value
     const name = document.getElementById('visualization-name').value
     const dataset = Visualization.getDataSetFromId(datasetId)
-    Visualization.visualizationSpecForm.innerHTML += `
+    Visualization.visualizationForm.innerHTML += `
       <h3>Select Your Data</h3>
       <form id="new-data-selection-form">
         Select x (or labels): <select id="x-data">
@@ -57,7 +60,7 @@ class Visualization {
         <input type="hidden" id="pass_name" value=${name.toLowerCase().replaceAll(' ','-')}>
         <input type="hidden" id="pass_dataset_id" value=${datasetId}>
         <input type="hidden" id="pass_type" value=${type}>
-        <input type="submit">
+        <input type="submit" id="visualization-spec-submit">
       </form>
     `
     Visualization.renderSpecOptions(dataset)
@@ -94,8 +97,15 @@ class Visualization {
       for(const e of xValues){
         xAxisLabels.push(e)
       }
+      Visualization.toggleVisBlur()
       this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel)
     }
+  }
+
+  static toggleVisBlur(){
+    const blur = document.getElementById('blur')
+    blur.classList.toggle('active')
+    Visualization.visualizationContainer.classList.toggle('active')
   }
 
   renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel){

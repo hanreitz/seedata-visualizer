@@ -34,13 +34,14 @@ class Dataset {
   }
 
   static renderForm(){
+    Dataset.datasetForm.innerHTML = ''
     Dataset.datasetForm.innerHTML += `
       <h3>Add a New Dataset</h3>
       <form id="new-dataset-form">
         Dataset name: <input type="text" id="dataset-name"><br><br>
         Brief description: <input type="text" id="dataset-description"><br><br>
         Choose a CSV file: <input type="file" id="dataset-upload" accept=".csv"><br><br>
-        <input type="submit">
+        <input type="submit" id='dataset-submit'>
       </form>
     `
   }
