@@ -50,17 +50,20 @@ function toggleBlur(){
   } 
 }
 
-// // listening for background clicks
-// blurArea.addEventListener('click', handleBackgroundClick)
-// headerHolder.addEventListener('click', handleBackgroundClick)
-// menuHolder.addEventListener('click', handleBackgroundClick)
+// listening for background clicks
+blurArea.addEventListener('click', handleBackgroundClick)
 
-// // function for handling background clicks
-// function handleBackgroundClick(){
-//   if(Dataset.datasetForm.className === 'active' || Visualization.visualizationForm.className === 'active' || Visualization.visualizationContainer.className === 'active'){
-//     blurArea.classList.toggle('active')
-//   }
-// }
+// function for handling background clicks
+function handleBackgroundClick(){
+  debugger;
+  if(Dataset.datasetForm.className === 'active' && blurArea.className === 'content-wrapper active'){
+    toggleDatasetBlur()
+  } else if(Visualization.visualizationForm.className === 'active' && blurArea.className === 'content-wrapper active'){
+    toggleVisSubmitBlur()
+  } else if(Visualization.visualizationContainer.className === 'active' && blurArea.className === 'content-wrapper active'){
+    toggleVisAreaBlur()
+  }
+}
 
 // listening for form submissions
 Dataset.datasetForm.addEventListener('submit', toggleDatasetBlur)
@@ -96,4 +99,9 @@ function handleVisualizationSubmit(){
 function toggleVisSubmitBlur(){
   blurArea.classList.toggle('active')
   Visualization.visualizationForm.classList.toggle('active')
+}
+
+function toggleVisAreaBlur(){
+  blurArea.classList.toggle('active')
+  Visualization.visualizationContainer.classList.toggle('active')
 }

@@ -57,8 +57,6 @@ h3
 .content-wrapper#blur.active
 {
   filter: blur(20px);
-  pointer-events: none;
-  user-select: none;
 }
 .content-wrapper .card
 {
