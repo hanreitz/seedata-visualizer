@@ -87,7 +87,7 @@ class Visualization {
     const passName = fixedNameArray.join(' ')
 
     const xData = Visualization.getData(this.datasetId, this.xChoice)
-    const xLabel = xData[0]
+    const xLabel = xData[0].charAt(0).toUpperCase() + xData[0].slice(1)
     const xValues = xData.slice(1)
 
     const yData = Visualization.getData(this.datasetId, this.yChoice)
@@ -116,11 +116,11 @@ class Visualization {
   }
 
   renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, name){
-    const margin = {left: 20, right: 20, top: 50, bottom: 50}
-    const width = 700 - margin.right - margin.left
-    const height = 500 - margin.top - margin.bottom
-    const barPadding = 5
+    const margin = {left: 50, right: 20, top: 50, bottom: 50}
+    const width = 700 - (margin.right + margin.left)
+    const height = 500 - (margin.top + margin.bottom)
     const barWidth = (width / yNumbers.length)
+    const barPadding = 0.25 * barWidth
         
     const svg = d3.select('svg')
       .attr("width", width + margin.left + margin.right)
@@ -138,30 +138,40 @@ class Visualization {
     const xAxis = d3.axisBottom()
       .scale(xScale)
     
+    const xTitle = svg.append('text')
+      .attr("text-anchor", "middle")
+      .attr("transform", "translate(" + (margin.left + margin.right + width)/2 + "," + (height + margin.top + (margin.bottom/1.2)) + ")")
+      .text(xLabel)
+         
+    const x = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
+      .call(xAxis)
+      .selectAll('text')
+      .style('text-anchor', 'middle')
+      .attr('dx', '-1.2em')
+      .attr('dy', '-0.5em')
+      .attr('transform', 'rotate(-90)');
+
     const yScale = d3.scaleLinear()
       .domain([d3.max(yNumbers), 0])
       .range([0, height]);
 
     const yAxis = d3.axisLeft()
       .scale(yScale)
-    
-    let maxw = 0;
+      
+    const yTitle = svg.append('text')
+      .attr("text-anchor", "middle")
+      .attr("dx", -(margin.bottom + height/2))
+      .attr("dy", margin.left/3)
+      .attr("transform", "rotate(-90)")
+      .text(yLabel)
 
-    const x = svg.append("g")
-      .attr("transform", "translate(" + (2*margin.left) + "," + margin.top + ")")
-      .call(yAxis)
-         
     const y = svg.append("g")
-      .attr("transform", "translate(" + (2*margin.left) + "," + (height + margin.top) + ")")
-      .call(xAxis)
-      .selectAll('text')
-      .style('text-anchor', 'center')
-      .attr('dx', '-1.2em')
-      .attr('dy', '-0.5em')
-      .attr('transform', 'rotate(-90)');
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .call(yAxis)
     
     const barChart = svg.append('g')
-      .attr("transform", "translate(" + margin.left + "," + (margin.top + margin.bottom) + ")")
+      .attr("transform", "translate(0," + (margin.top + margin.bottom) + ")")
       .attr("width", width)
       .attr("height", height)
       .selectAll("rect")

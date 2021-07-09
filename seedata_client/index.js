@@ -2,8 +2,11 @@
 const baseUrl = "http://localhost:3000"
 const datasetService = new DatasetService(baseUrl)
 const visualizationService = new VisualizationService(baseUrl)
+
 const menuContainer = document.getElementById('menu-container')
 const menuHolder = document.getElementById('menu-holder')
+const headerHolder = document.getElementById('header-holder')
+const blurArea = document.getElementById('blur')
 
 // get current datasets
 datasetService.getDatasets()
@@ -37,8 +40,7 @@ menuContainer.addEventListener('click', toggleBlur)
 
 // handling menu events
 function toggleBlur(){
-  const blur = document.getElementById('blur')
-  blur.classList.toggle('active')
+  blurArea.classList.toggle('active')
   if (event.target.id === 'menu-item-add-new-dataset'){
     Dataset.renderForm()
     Dataset.datasetForm.classList.toggle('active')
@@ -47,6 +49,18 @@ function toggleBlur(){
     Visualization.visualizationForm.classList.toggle('active')
   } 
 }
+
+// // listening for background clicks
+// blurArea.addEventListener('click', handleBackgroundClick)
+// headerHolder.addEventListener('click', handleBackgroundClick)
+// menuHolder.addEventListener('click', handleBackgroundClick)
+
+// // function for handling background clicks
+// function handleBackgroundClick(){
+//   if(Dataset.datasetForm.className === 'active' || Visualization.visualizationForm.className === 'active' || Visualization.visualizationContainer.className === 'active'){
+//     blurArea.classList.toggle('active')
+//   }
+// }
 
 // listening for form submissions
 Dataset.datasetForm.addEventListener('submit', toggleDatasetBlur)
@@ -63,8 +77,7 @@ function handleDatasetSubmit(){
 }
 
 function toggleDatasetBlur(){
-  const blur = document.getElementById('blur')
-  blur.classList.toggle('active')
+  blurArea.classList.toggle('active')
   Dataset.datasetForm.classList.toggle('active')
 }
 
@@ -81,7 +94,6 @@ function handleVisualizationSubmit(){
 }
 
 function toggleVisSubmitBlur(){
-  const blur = document.getElementById('blur')
-  blur.classList.toggle('active')
+  blurArea.classList.toggle('active')
   Visualization.visualizationForm.classList.toggle('active')
 }
