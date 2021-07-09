@@ -10,16 +10,16 @@ class VisualizationService {
 
   // fetch request to grab all existing visualizations
 
-  // getVisualizations() {
-  //   fetch(`${this.endpoint}/visualizations`)
-  //   .then(resp => resp.json())
-  //   .then(visualizations => {
-  //     for (const visualization of visualizations){
-  //       const v = new Visualization(visualization)
-  //       v.addToDom()
-  //     }
-  //   })
-  // }
+  getVisualizations() {
+    fetch(`${this.endpoint}/visualizations`)
+    .then(resp => resp.json())
+    .then(visualizations => {
+      for (const visualization of visualizations){
+        const v = new Visualization(visualization)
+        v.addToDom()
+      }
+    })
+  }
 
   // Create/Post action
 
@@ -44,7 +44,8 @@ class VisualizationService {
     .then(resp => resp.json())
     .then(visualization => {
       const v = new Visualization(visualization)
-      v.renderVisualization(v.name)
+      v.addToDom()
+      // v.renderVisualization(v.name)
     })
   }
 

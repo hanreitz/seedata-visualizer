@@ -11,6 +11,9 @@ const blurArea = document.getElementById('blur')
 // get current datasets
 datasetService.getDatasets()
 
+// get current visualizations
+visualizationService.getVisualizations()
+
 // menu creation
 addMenuItem('Add New Dataset')
 addMenuItem('Create New Visualization')
@@ -55,14 +58,13 @@ blurArea.addEventListener('click', handleBackgroundClick)
 
 // function for handling background clicks
 function handleBackgroundClick(){
-  debugger;
   if(Dataset.datasetForm.className === 'active' && blurArea.className === 'content-wrapper active'){
     toggleDatasetBlur()
   } else if(Visualization.visualizationForm.className === 'active' && blurArea.className === 'content-wrapper active'){
     toggleVisSubmitBlur()
-  } else if(Visualization.visualizationContainer.className === 'active' && blurArea.className === 'content-wrapper active'){
-    toggleVisAreaBlur()
-  }
+  }// } else if(Visualization.visualizationContainer.className === 'active' && blurArea.className === 'content-wrapper active'){
+  //   toggleVisAreaBlur()
+  // }
 }
 
 // listening for form submissions
@@ -101,7 +103,5 @@ function toggleVisSubmitBlur(){
   Visualization.visualizationForm.classList.toggle('active')
 }
 
-function toggleVisAreaBlur(){
-  blurArea.classList.toggle('active')
-  Visualization.visualizationContainer.classList.toggle('active')
-}
+// handling visualization clicks
+Visualization.visCardContainer.addEventListener('click', Visualization.handleVisualizationClick)
