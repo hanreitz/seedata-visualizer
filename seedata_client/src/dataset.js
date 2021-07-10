@@ -2,8 +2,9 @@ class Dataset {
   // make sure delete option removes from Dataset.all
   static all = []
 
-  static datasetContainer = document.getElementById('dataset-container')
+  static datasetDropdown = document.getElementById('current-datasets')
   static datasetForm = document.getElementById('dataset-form-container')
+  static datasetContainer = document.getElementById('dataset-container')
 
   constructor({id, name, description, contents}){
     this.id = id
@@ -11,21 +12,14 @@ class Dataset {
     this.description = description
     this.contents = contents
 
-    this.element = document.createElement('div')
+    this.element = new Option(`${this.name}`)
     this.element.id = `dataset-${this.id}`
 
     Dataset.all.push(this)
   }
 
-  datasetElement(){
-    this.element.innerHTML += `
-      <p><strong>${this.name}</strong> - ${this.description}</p>
-    `
-    return this.element
-  }
-
   addToDom(){
-    Dataset.datasetContainer.appendChild(this.datasetElement())
+    Dataset.datasetDropdown.add(this.element, undefined)
   }
 
   addOptionToSelect(){

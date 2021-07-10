@@ -7,20 +7,19 @@
   <div class="header" id="header-holder">
     <h1>SeeData Visualizer</h1>
   </div>
-  <div class="menu" id="menu-holder">
-    <h3>Menu</h3>
-      <div id="menu-container" class="menu-items" style="display: none"></div>
-  </div>
-  <div class="content-wrapper" id="blur">
+  <div id="blur">
     
     <h3>Current Datasets</h3>
-    <div id="dataset-container" class="card">
-  
+    <div id="dataset-container">
+      <select id='current-datasets'>
+        <option selected disabled hidden style='display: none' value=''></option>
+      </select>
+      <button id="new-dataset-button">Add New Dataset</button>
     </div>
+    <br><br>
+
     <h3>Current Visualizations</h3>
-    <div id="visualization-card-container" class="card">
-    
-    </div>
+    <div id="visualization-card-container" class="card"></div>
 
   </div>
   <div id="dataset-form-container"></div>

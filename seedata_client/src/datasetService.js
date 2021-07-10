@@ -10,8 +10,8 @@ class DatasetService {
 
   // fetch request to grab all existing datasets
 
-  getDatasets() {
-    fetch(`${this.endpoint}/datasets`)
+  async getDatasets() {
+    await fetch(`${this.endpoint}/datasets`)
     .then(resp => resp.json())
     .then(datasets => {
       for (const dataset of datasets){

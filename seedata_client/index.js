@@ -7,64 +7,35 @@ const menuContainer = document.getElementById('menu-container')
 const menuHolder = document.getElementById('menu-holder')
 const headerHolder = document.getElementById('header-holder')
 const blurArea = document.getElementById('blur')
+const datasetButton = document.getElementById('new-dataset-button')
 
-// get current datasets
-datasetService.getDatasets()
-
-// get current visualizations
+// get current datasets and visualizations (datasets called within visualizations to avoid race conditions)
 visualizationService.getVisualizations()
 
-// menu creation
-addMenuItem('Add New Dataset')
-addMenuItem('Create New Visualization')
+// handling dataset clicks
+Dataset.datasetDropdown.addEventListener('change', handleDatasetSelect)
 
-// function for creating menu items
-function addMenuItem(item){
-  const menuItem = document.createElement('p')
-  menuItem.id = `menu-item-${item.toLowerCase().split(' ').join('-')}`
-  menuItem.innerText = item
-  menuContainer.append(menuItem)
-}
-
-// handling menu mouseover
-menuHolder.addEventListener('mouseover', handleMenuMouseover)
-menuHolder.addEventListener('mouseout', handleMenuMouseout)
-
-function handleMenuMouseover(){
-  menuContainer.style.display = "block"
-}
-
-function handleMenuMouseout(){
-  menuContainer.style.display = "none"
-}
-
-// listening for menu clicks
-menuContainer.addEventListener('click', toggleBlur)
-
-// handling menu events
-function toggleBlur(){
+function handleDatasetSelect(){
+  Visualization.renderForm(event.target.value)
   blurArea.classList.toggle('active')
-  if (event.target.id === 'menu-item-add-new-dataset'){
-    Dataset.renderForm()
-    Dataset.datasetForm.classList.toggle('active')
-  } else if (event.target.id === 'menu-item-create-new-visualization'){
-    Visualization.renderForm()
-    Visualization.visualizationForm.classList.toggle('active')
-  } 
+  Visualization.visualizationForm.classList.toggle('active')
 }
+
+// handling visualization clicks
+Visualization.visCardContainer.addEventListener('click', Visualization.handleVisualizationClick)
 
 // listening for background clicks
 blurArea.addEventListener('click', handleBackgroundClick)
 
 // function for handling background clicks
 function handleBackgroundClick(){
-  if(Dataset.datasetForm.className === 'active' && blurArea.className === 'content-wrapper active'){
+  if(Dataset.datasetForm.className === 'active' && blurArea.className === 'active'){
     toggleDatasetBlur()
-  } else if(Visualization.visualizationForm.className === 'active' && blurArea.className === 'content-wrapper active'){
+  } else if(Visualization.visualizationForm.className === 'active' && blurArea.className === 'active'){
     toggleVisSubmitBlur()
-  }// } else if(Visualization.visualizationContainer.className === 'active' && blurArea.className === 'content-wrapper active'){
-  //   toggleVisAreaBlur()
-  // }
+  } else if(event.target.id === 'new-dataset-button'){
+    toggleDatasetBlur()
+  }
 }
 
 // listening for form submissions
@@ -83,7 +54,12 @@ function handleDatasetSubmit(){
 
 function toggleDatasetBlur(){
   blurArea.classList.toggle('active')
-  Dataset.datasetForm.classList.toggle('active')
+  if(event.target.id === 'new-dataset-button'){
+    Dataset.renderForm()
+    Dataset.datasetForm.classList.toggle('active')
+  } else {
+    Dataset.datasetForm.classList.toggle('active')
+  }
 }
 
 function handleVisualizationSelect(){
@@ -102,6 +78,3 @@ function toggleVisSubmitBlur(){
   blurArea.classList.toggle('active')
   Visualization.visualizationForm.classList.toggle('active')
 }
-
-// handling visualization clicks
-Visualization.visCardContainer.addEventListener('click', Visualization.handleVisualizationClick)

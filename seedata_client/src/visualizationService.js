@@ -10,8 +10,9 @@ class VisualizationService {
 
   // fetch request to grab all existing visualizations
 
-  getVisualizations() {
-    fetch(`${this.endpoint}/visualizations`)
+  async getVisualizations() {
+    await datasetService.getDatasets()
+    await fetch(`${this.endpoint}/visualizations`)
     .then(resp => resp.json())
     .then(visualizations => {
       for (const visualization of visualizations){

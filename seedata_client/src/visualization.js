@@ -21,7 +21,7 @@ class Visualization {
     Visualization.all.push(this)
   }
 
-  datasetElement(){
+  visualizationElement(){
     this.element.innerHTML += `
       <svg id='visualization-${this.id}'></svg>
     `
@@ -29,19 +29,18 @@ class Visualization {
   }
 
   addToDom(){
-    Visualization.visCardContainer.appendChild(this.datasetElement())
+    Visualization.visCardContainer.appendChild(this.visualizationElement())
     const renderTarget = document.getElementById(`visualization-${this.id}`)
     this.renderVisualization(this.name, 0.35, renderTarget)  
   }
 
-  static renderForm(){
+  static renderForm(input){
     Visualization.visualizationForm.innerHTML = ''
     Visualization.visualizationForm.innerHTML += `
       <h3>Create a New Visualization</h3>
       <form id="new-visualization-form">
         Visualization name: <input type="text" id="visualization-name"><br><br>
         Choose a dataset: <select id="select-dataset">
-          <option selected disabled hidden style='display: none' value=''></option>
         </select><br><br>
         Select a visualization type: <select id="visualization-types">
           <option selected disabled hidden style='display: none' value=''></option>
@@ -52,7 +51,12 @@ class Visualization {
         </select><br><br>
       </form>
     `
-    for (const d of Dataset.all){
+    if(!input){
+      for (const d of Dataset.all){
+        d.addOptionToSelect();
+      }
+    }else {
+      const d = Dataset.all.find(data => data.name === input)
       d.addOptionToSelect();
     }
   }
@@ -127,16 +131,24 @@ renderVisualization(name, size, renderTarget){
     const yNumbers = [];
     for(const e of yValues){
       yNumbers.push(parseFloat(e))
-    };
-
-    const xAxisLabels = [];
-      for(const e of xValues){
-        xAxisLabels.push(e)
-      }
-      // Visualization.toggleVisBlur()
-      this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, passName, size, renderTarget)
     }
+    const xAxisLabels = [];
+    for(const e of xValues){
+      xAxisLabels.push(e)
+    }
+    this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, passName, size, renderTarget)
+  } else if (this.chartType === 'line'){
+    const xNumbers = [];
+    for(const e of xValues){
+      xNumbers.push(parseFloat(e))
+    }
+    const yNumbers = [];
+    for(const e of yValues){
+      yNumbers.push(parseFloat(e))
+    }
+    this.renderLineGraph(xNumbers, yNumbers, xLabel, yLabel, passName, size, renderTarget)
   }
+}
 
   static toggleVisBlur(){
     const blur = document.getElementById('blur')
@@ -237,6 +249,98 @@ renderVisualization(name, size, renderTarget){
         return "translate("+ translate +")";
       });
 
+  }
+
+  renderLineGraph(xNumbers, yNumbers, xLabel, yLabel, name, size, renderTarget){
+    const dataset = []
+    for(let i=0; i<xNumbers.length; i++){
+      dataset.push({
+        xVal: xNumbers[i],
+        yVal: yNumbers[i]
+      })
+    }
+    const margin = {left: 50*size, right: 20*size, top: 50*size, bottom: 50*size}
+    const width = size*(700 - (margin.right + margin.left))
+    const height = size*(500 - (margin.top + margin.bottom))
+
+    const svg = d3.select(renderTarget)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.bottom + margin.top);
+
+    const chartTitle = svg.append('text')
+      .attr("text-anchor", "middle")
+      .attr("transform", "translate(" + (width + margin.left + margin.right)/2 + "," + margin.top/2 + ")")
+      .text(name)
+      .style('font-size', `${24*size}px`)
+          
+    const g = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      
+    const xScale = d3.scaleLinear()
+      .domain([d3.min(xNumbers),d3.max(xNumbers)])
+      .range([0, width])
+
+    const xAxis = d3.axisBottom()
+      .scale(xScale)
+      .tickSize(6*size)
+    
+    const xTitle = svg.append('text')
+      .attr("text-anchor", "middle")
+      .attr("transform", "translate(" + (margin.left + margin.right + width)/2 + "," + (height + margin.top + (margin.bottom/1.2)) + ")")
+      .text(xLabel)
+      .style('font-size', `${16*size}px`)
+         
+    const x = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
+      .attr("class", "xAxis")
+      .call(xAxis)
+      .selectAll('text')
+      .style('text-anchor', 'middle')
+
+    d3.selectAll('.xAxis>.tick>text')
+      .each(function(){
+        d3.select(this).style('font-size',`${12*size}px`)
+      })
+      
+    const yScale = d3.scaleLinear()
+      .domain([d3.min(yNumbers), d3.max(yNumbers)])
+      .range([height, 0]);
+
+    const yAxis = d3.axisLeft()
+      .scale(yScale)
+      .tickSize(6*size)
+      
+    const yTitle = svg.append('text')
+      .attr("text-anchor", "middle")
+      .attr("dx", -(margin.bottom + height/2))
+      .attr("dy", margin.left/3)
+      .attr("transform", "rotate(-90)")
+      .text(yLabel)
+      .style('font-size', `${16*size}px`)
+
+    const y = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .attr("class", "yAxis")
+      .call(yAxis)
+
+    d3.selectAll('.yAxis>.tick>text')
+      .each(function(){
+        d3.select(this).style('font-size',`${12*size}px`)
+      })
+      
+    const line = d3.line()
+      .x(d => xScale(d.xVal))
+      .y(d => yScale(d.yVal))
+
+    const addLine = g.append('path')
+      .datum(dataset)
+      .attr('class', 'line')
+      .attr('fill','none')
+      .attr('stroke','black')
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-width', 1.5*size)
+      .attr('d', line)
   }
 
   static getData(datasetId, choice){
