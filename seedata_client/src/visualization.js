@@ -22,16 +22,23 @@ class Visualization {
   }
 
   visualizationElement(){
+    if(this.chartType != 'table'){
     this.element.innerHTML += `
       <svg id='visualization-${this.id}'></svg>
     `
+    }
     return this.element
   }
 
   addToDom(){
     Visualization.visCardContainer.appendChild(this.visualizationElement())
-    const renderTarget = this.element.firstElementChild
-    this.renderVisualization(this.name, 0.35, renderTarget)  
+    if(this.chartType === 'table'){
+      const renderTarget = this.element
+      this.renderVisualization(this.name, 0.35, renderTarget) 
+    } else {
+      const renderTarget = this.element.firstElementChild
+      this.renderVisualization(this.name, 0.35, renderTarget) 
+    } 
   }
 
   static renderForm(input){
@@ -110,9 +117,12 @@ class Visualization {
       document.getElementById(`vis-card-${visId}`).remove()
       const visualization = Visualization.all.find(v => v.id === visId)
       const visInd = Visualization.all.indexOf(visualization)
-      Visualization.all.splice(visInd, 1)
+      Visualization.all.splice(0,Visualization.all.length)
       visualizationService.deleteVisualization(visId)
-    } else if(targetDiv.parentElement === Visualization.visCardContainer){
+      Visualization.visCardContainer.innerHTML = ''
+      Dataset.all.splice(0,Dataset.all.length)
+      visualizationService.getVisualizations()
+    } else if(targetDiv.parentElement === Visualization.visCardContainer || targetDiv === Visualization.visCardContainer){
       const visId = parseInt(targetDiv.id.split('-')[2])
       const visualization = Visualization.all.find(v => v.id === visId)
       const visPopup = document.getElementById('vis-popup')
@@ -127,7 +137,7 @@ class Visualization {
       deleteButton.type = 'submit'
       deleteButton.innerText = 'Delete Visualization'
       Visualization.visualizationContainer.append(deleteButton)
-    } else if (targetDiv.firstElementChild.tagName === 'TABLE'){
+    } else if (targetDiv === Visualization.visualizationContainer && targetDiv.firstElementChild.tagName === 'TABLE'){
       const visId = parseInt(targetDiv.firstElementChild.dataset.id)
       targetDiv.innerHTML = ''
       targetDiv.innerHTML += `
@@ -200,7 +210,13 @@ class Visualization {
       }
       this.renderPieChart(labels, yNumbers, passName, size, renderTarget)
     } else if (this.chartType === 'table'){
-      this.renderDataTable(xData, yData, passName, size, renderTarget)
+      if(renderTarget === document.getElementById('vis-popup')){
+        const tableRender = renderTarget.parentElement
+        tableRender.firstElementChild.remove()
+        this.renderDataTable(xData, yData, passName, size, tableRender)
+      } else {
+        this.renderDataTable(xData, yData, passName, size, renderTarget)
+      }
     }
   }
 
@@ -451,11 +467,8 @@ class Visualization {
   }
 
   renderDataTable(xData, yData, passName, size, renderTarget){
-    const tableArea = renderTarget.parentElement
-    tableArea.innerHTML = ''
     const table = document.createElement('table')
     table.dataset.id = `${this.id}`
-    tableArea.append(table)
     table.innerHTML += `
       <p style='font-size:${24*size}px'>${passName}</p>
       <br>
@@ -472,6 +485,11 @@ class Visualization {
       </tr>
       `
     }
+    // if(renderTarget === document.getElementById(`vis-card-${this.id}`)){
+      renderTarget.append(table)
+    // } else {
+    //   console.log(renderTarget)
+    // }
   }
 
   static getData(datasetId, choice){

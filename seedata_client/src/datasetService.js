@@ -6,9 +6,7 @@ class DatasetService {
     this.endpoint = endpoint
   }
 
-  // Read/Index action
-
-  // fetch request to grab all existing datasets
+// Read/Index action
 
   async getDatasets() {
     await fetch(`${this.endpoint}/datasets`)
@@ -20,6 +18,8 @@ class DatasetService {
       }
     })
   }
+
+// Create action
 
   createDataset(){
     let formData = new FormData() 

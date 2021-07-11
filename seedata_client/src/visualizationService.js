@@ -8,8 +8,6 @@ class VisualizationService {
 
   // Read/Index action
 
-  // fetch request to grab all existing visualizations
-
   async getVisualizations() {
     await datasetService.getDatasets()
     await fetch(`${this.endpoint}/visualizations`)
