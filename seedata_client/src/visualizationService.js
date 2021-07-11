@@ -50,4 +50,22 @@ class VisualizationService {
     })
   }
 
+  // Delete action
+
+  deleteVisualization(id){
+    const configObj = {
+      method: "DELETE",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+
+    fetch(`${this.endpoint}/visualizations/${id}`, configObj)
+    .then(function(resp) {
+      if (resp.status === 204){
+        alert('Visualization successfully deleted')
+      }
+    })
+  }
+
 }

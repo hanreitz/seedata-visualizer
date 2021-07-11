@@ -17,25 +17,36 @@ Dataset.datasetDropdown.addEventListener('change', handleDatasetSelect)
 
 function handleDatasetSelect(){
   Visualization.renderForm(event.target.value)
+  Dataset.datasetDropdown.selectedIndex = 0;
   blurArea.classList.toggle('active')
   Visualization.visualizationForm.classList.toggle('active')
 }
 
 // handling visualization clicks
 Visualization.visCardContainer.addEventListener('click', Visualization.handleVisualizationClick)
+Visualization.visualizationContainer.addEventListener('click', Visualization.handleVisualizationClick)
 
-// listening for background clicks
-blurArea.addEventListener('click', handleBackgroundClick)
+// listening for new dataset button clicks
+blurArea.addEventListener('click', handleNewDataset)
 
-// function for handling background clicks
-function handleBackgroundClick(){
-  if(Dataset.datasetForm.className === 'active' && blurArea.className === 'active'){
-    toggleDatasetBlur()
-  } else if(Visualization.visualizationForm.className === 'active' && blurArea.className === 'active'){
-    toggleVisSubmitBlur()
-  } else if(event.target.id === 'new-dataset-button'){
+// handling the new dataset button
+function handleNewDataset(){
+  if(event.target.id === 'new-dataset-button'){
     toggleDatasetBlur()
   }
+}
+
+// listening for form exit (non-submit) clicks
+Dataset.datasetForm.addEventListener('click', handleExitClick)
+Visualization.visualizationForm.addEventListener('click', handleExitClick)
+
+// function for handling form exit (non-submit) clicks
+function handleExitClick(){
+  if(Dataset.datasetForm.className === 'active' && blurArea.className === 'active' && event.target.parentElement.tagName != 'FORM'){
+    toggleDatasetBlur()
+  } else if(Visualization.visualizationForm.className === 'active' && blurArea.className === 'active' && event.target.parentElement.tagName != 'FORM'){
+    toggleVisSubmitBlur()
+  } 
 }
 
 // listening for form submissions

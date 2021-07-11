@@ -42,11 +42,13 @@ h3
 #blur.active
 {
   filter: blur(20px);
+  pointer-events: none;
+  user-select: none;
 }
 .card
 {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   grid-auto-rows: minmax(0, auto);
 }
@@ -112,4 +114,5 @@ h3
   visibility: visible;
   opacity: 1;
   transition: 0.5s;
+  pointer-events: auto;
 }

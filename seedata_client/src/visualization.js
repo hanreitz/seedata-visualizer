@@ -30,7 +30,7 @@ class Visualization {
 
   addToDom(){
     Visualization.visCardContainer.appendChild(this.visualizationElement())
-    const renderTarget = document.getElementById(`visualization-${this.id}`)
+    const renderTarget = this.element.firstElementChild
     this.renderVisualization(this.name, 0.35, renderTarget)  
   }
 
@@ -97,58 +97,112 @@ class Visualization {
   }
 
 // handling visualization clicks
-static handleVisualizationClick(){
-  let targetDiv = event.target
-  while(targetDiv.tagName != 'DIV'){
-    targetDiv = targetDiv.parentElement
+  static handleVisualizationClick(){
+    let targetDiv = event.target
+    while(targetDiv.tagName != 'DIV'){
+      targetDiv = targetDiv.parentElement
+    }
+    if (event.target.id === 'delete-button'){
+      Visualization.visualizationContainer.lastElementChild.remove()
+      blurArea.classList.toggle('active')
+      Visualization.visualizationContainer.classList.toggle('active')
+      const visId = parseInt(event.target.dataset.id)
+      document.getElementById(`vis-card-${visId}`).remove()
+      const visualization = Visualization.all.find(v => v.id === visId)
+      const visInd = Visualization.all.indexOf(visualization)
+      Visualization.all.splice(visInd, 1)
+      visualizationService.deleteVisualization(visId)
+    } else if(targetDiv.parentElement === Visualization.visCardContainer){
+      const visId = parseInt(targetDiv.id.split('-')[2])
+      const visualization = Visualization.all.find(v => v.id === visId)
+      const visPopup = document.getElementById('vis-popup')
+      visPopup.innerHTML = ''
+      visPopup.dataset.id = visId
+      blurArea.classList.toggle('active')
+      Visualization.visualizationContainer.classList.toggle('active')
+      visualization.renderVisualization(visualization.name, 1, visPopup)
+      const deleteButton = document.createElement('button')
+      deleteButton.id = 'delete-button'
+      deleteButton.dataset.id = visId
+      deleteButton.type = 'submit'
+      deleteButton.innerText = 'Delete Visualization'
+      Visualization.visualizationContainer.append(deleteButton)
+    } else if (targetDiv.firstElementChild.tagName === 'TABLE'){
+      const visId = parseInt(targetDiv.firstElementChild.dataset.id)
+      targetDiv.innerHTML = ''
+      targetDiv.innerHTML += `
+        <svg id="vis-popup"></svg>
+      `
+      const visualization = Visualization.all.find(v => v.id === visId)
+      const card = document.getElementById(`vis-card-${visId}`)
+      const renderTarget = card.firstElementChild
+      renderTarget.innerHTML = ''
+      blurArea.classList.toggle('active')
+      Visualization.visualizationContainer.classList.toggle('active')
+      visualization.renderVisualization(visualization.name, 0.35, renderTarget)
+    } else if(targetDiv.id != 'visualization-card-container'){
+      Visualization.visualizationContainer.lastElementChild.remove()
+      const visId = parseInt(targetDiv.firstElementChild.dataset.id)
+      const visualization = Visualization.all.find(v => v.id === visId)
+      const card = document.getElementById(`vis-card-${visId}`)
+      const renderTarget = card.firstElementChild
+      renderTarget.innerHTML = ''
+      blurArea.classList.toggle('active')
+      Visualization.visualizationContainer.classList.toggle('active')
+      visualization.renderVisualization(visualization.name, 0.35, renderTarget)
+    }
   }
-  const visId = parseInt(targetDiv.id.split('-')[2])
-  const visualization = Visualization.all.find(v => v.id === visId)
-  const renderTarget = document.getElementById('vis-popup')
-  renderTarget.innerHTML = ''
-  blurArea.classList.toggle('active')
-  Visualization.visualizationContainer.classList.toggle('active')
-  visualization.renderVisualization(visualization.name, 1, renderTarget)
-}
 
-renderVisualization(name, size, renderTarget){
-  const nameArray = name.split('-')
-  const fixedNameArray = []
-  for(const word of nameArray){
+  renderVisualization(name, size, renderTarget){
+    const nameArray = name.split('-')
+    const fixedNameArray = []
+    for(const word of nameArray){
       fixedNameArray.push(word.charAt(0).toUpperCase() + word.slice(1))
+    }
+    const passName = fixedNameArray.join(' ')
+
+    const xData = Visualization.getData(this.datasetId, this.xChoice)
+    const xLabel = xData[0].charAt(0).toUpperCase() + xData[0].slice(1)
+    const xValues = xData.slice(1)
+
+    const yData = Visualization.getData(this.datasetId, this.yChoice)
+    const yLabel = yData[0]
+    const yValues = yData.slice(1)
+
+    if (this.chartType === 'bar'){
+      const yNumbers = [];
+      for(const e of yValues){
+        yNumbers.push(parseFloat(e))
+      }
+      const xAxisLabels = [];
+      for(const e of xValues){
+        xAxisLabels.push(e)
+      }
+      this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, passName, size, renderTarget)
+    } else if (this.chartType === 'line'){
+      const xNumbers = [];
+      for(const e of xValues){
+        xNumbers.push(parseFloat(e))
+      }
+      const yNumbers = [];
+      for(const e of yValues){
+        yNumbers.push(parseFloat(e))
+      }
+      this.renderLineGraph(xNumbers, yNumbers, xLabel, yLabel, passName, size, renderTarget)
+    } else if (this.chartType === 'pie'){
+      const labels = [];
+      for(const e of xValues){
+        labels.push(e)
+      }
+      const yNumbers = [];
+      for(const e of yValues){
+        yNumbers.push(parseFloat(e))
+      }
+      this.renderPieChart(labels, yNumbers, passName, size, renderTarget)
+    } else if (this.chartType === 'table'){
+      this.renderDataTable(xData, yData, passName, size, renderTarget)
+    }
   }
-  const passName = fixedNameArray.join(' ')
-
-  const xData = Visualization.getData(this.datasetId, this.xChoice)
-  const xLabel = xData[0].charAt(0).toUpperCase() + xData[0].slice(1)
-  const xValues = xData.slice(1)
-
-  const yData = Visualization.getData(this.datasetId, this.yChoice)
-  const yLabel = yData[0]
-  const yValues = yData.slice(1)
-
-  if (this.chartType === 'bar'){
-    const yNumbers = [];
-    for(const e of yValues){
-      yNumbers.push(parseFloat(e))
-    }
-    const xAxisLabels = [];
-    for(const e of xValues){
-      xAxisLabels.push(e)
-    }
-    this.renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, passName, size, renderTarget)
-  } else if (this.chartType === 'line'){
-    const xNumbers = [];
-    for(const e of xValues){
-      xNumbers.push(parseFloat(e))
-    }
-    const yNumbers = [];
-    for(const e of yValues){
-      yNumbers.push(parseFloat(e))
-    }
-    this.renderLineGraph(xNumbers, yNumbers, xLabel, yLabel, passName, size, renderTarget)
-  }
-}
 
   static toggleVisBlur(){
     const blur = document.getElementById('blur')
@@ -157,7 +211,6 @@ renderVisualization(name, size, renderTarget){
   }
 
   renderBarChart(xAxisLabels, yNumbers, xLabel, yLabel, name, size, renderTarget){
-    // const svgId = document.getElementById(`visualization-${this.id}`)
     const margin = {left: 50*size, right: 20*size, top: 50*size, bottom: 50*size}
     const width = size*(700 - (margin.right + margin.left))
     const height = size*(500 - (margin.top + margin.bottom))
@@ -229,6 +282,8 @@ renderVisualization(name, size, renderTarget){
         d3.select(this).style('font-size',`${12*size}px`)
       })
     
+    let color = d3.scaleOrdinal(d3.schemeCategory10)
+
     const barChart = svg.append('g')
       .attr("transform", "translate(0," + (margin.top + margin.bottom) + ")")
       .attr("width", width)
@@ -247,8 +302,7 @@ renderVisualization(name, size, renderTarget){
       .attr("transform", function (d, i) {
         const translate = [margin.left + barPadding/2 + barWidth * i, -margin.bottom]; 
         return "translate("+ translate +")";
-      });
-
+      })
   }
 
   renderLineGraph(xNumbers, yNumbers, xLabel, yLabel, name, size, renderTarget){
@@ -341,6 +395,83 @@ renderVisualization(name, size, renderTarget){
       .attr('stroke-linecap', 'round')
       .attr('stroke-width', 1.5*size)
       .attr('d', line)
+  }
+
+  renderPieChart(labels, yNumbers, passName, size, renderTarget){
+    const margin = {left: 50*size, right: 50*size, top: 50*size, bottom: 50*size}
+    const width = size*(700 - (margin.right + margin.left))
+    const height = size*(700 - (margin.top + margin.bottom))
+    const radius = size*(Math.min(width, height)/2)
+
+    const svg = d3.select(renderTarget)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.bottom + margin.top);
+
+    const chartArea = svg.append('g')
+      .attr("transform", "translate(" + (margin.left + radius) + "," + (margin.top + radius) + ")")
+    
+    let color = d3.scaleOrdinal(d3.schemeCategory10)
+
+    const piePiece = d3.pie().value(d => d)
+
+    const path = d3.arc()
+      .outerRadius(radius)
+      .innerRadius(0)
+
+    const arc = chartArea.selectAll('arc')
+      .data(piePiece(yNumbers))
+      .enter()
+      .append('g')
+
+    arc.append('path')
+      .attr('d', path)
+      .attr('fill', d => color(d.data))
+
+    const label = d3.arc()
+      .outerRadius(radius)
+      .innerRadius(0)
+
+    arc.append('text')
+      .attr('transform', function(d) {
+        return 'translate(' + label.centroid(d) + ')';
+      })
+      .attr('text-anchor', 'middle')
+      .text(function(d) {
+        return labels[d.index] + ":" + d.data + "%"
+      })
+
+    d3.selectAll('text')
+      .attr('font-size', `${12*size}px`)
+
+    const chartTitle = svg.append('text')
+      .attr("text-anchor", "middle")
+      .attr("transform", "translate(" + (width + margin.left + margin.right)/2 + "," + margin.top/2 + ")")
+      .text(passName)
+      .style('font-size', `${24*size}px`)
+  }
+
+  renderDataTable(xData, yData, passName, size, renderTarget){
+    const tableArea = renderTarget.parentElement
+    tableArea.innerHTML = ''
+    const table = document.createElement('table')
+    table.dataset.id = `${this.id}`
+    tableArea.append(table)
+    table.innerHTML += `
+      <p style='font-size:${24*size}px'>${passName}</p>
+      <br>
+      <tr style='text-align:left'>
+      <th style='font-size:${18*size}px'>${xData[0]}</th>
+      <th style='font-size:${18*size}px'>${yData[0]}</th>
+      </tr>
+    `
+    for(let i = 1; i<xData.length; i++){
+      table.innerHTML += `
+      <tr style='font-size:${14*size}px'>
+      <td>${xData[i]}</td>
+      <td>${yData[i]}</td>
+      </tr>
+      `
+    }
   }
 
   static getData(datasetId, choice){
