@@ -110,7 +110,11 @@ class Visualization {
       targetDiv = targetDiv.parentElement
     }
     if (event.target.id === 'delete-button'){
+      Visualization.visualizationContainer.firstElementChild.remove()
       Visualization.visualizationContainer.lastElementChild.remove()
+      Visualization.visualizationContainer.innerHTML += `
+        <svg id="vis-popup"></svg>
+      `
       blurArea.classList.toggle('active')
       Visualization.visualizationContainer.classList.toggle('active')
       const visId = parseInt(event.target.dataset.id)

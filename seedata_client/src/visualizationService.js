@@ -44,7 +44,6 @@ class VisualizationService {
     .then(visualization => {
       const v = new Visualization(visualization)
       v.addToDom()
-      // v.renderVisualization(v.name)
     })
   }
 
