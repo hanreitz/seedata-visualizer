@@ -175,11 +175,11 @@ class Visualization {
     }
     const passName = fixedNameArray.join(' ')
 
-    const xData = Visualization.getData(this.datasetId, this.xChoice)
+    const xData = this.getData('x')
     const xLabel = xData[0].charAt(0).toUpperCase() + xData[0].slice(1)
     const xValues = xData.slice(1)
 
-    const yData = Visualization.getData(this.datasetId, this.yChoice)
+    const yData = this.getData('y')
     const yLabel = yData[0]
     const yValues = yData.slice(1)
 
@@ -363,7 +363,7 @@ class Visualization {
       .attr("transform", "translate(" + (margin.left + margin.right + width)/2 + "," + (height + margin.top + (margin.bottom/1.2)) + ")")
       .text(xLabel)
       .style('font-size', `${16*size}px`)
-         
+        
     const x = svg.append("g")
       .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
       .attr("class", "xAxis")
@@ -489,34 +489,30 @@ class Visualization {
       </tr>
       `
     }
-    // if(renderTarget === document.getElementById(`vis-card-${this.id}`)){
-      renderTarget.append(table)
-    // } else {
-    //   console.log(renderTarget)
-    // }
+    renderTarget.append(table)
   }
 
-  static getData(datasetId, choice){
-    const dataset = Visualization.getDataSetFromId(datasetId)
+  getData = (choice) => {
+    const dataset = Visualization.getDataSetFromId(this.datasetId)
     const dataArray = Visualization.makeArrayFromDataset(dataset)
-    const headers = Visualization.formatRow(dataArray, 0)
+
     const data = []
-    for (const i in dataArray){
-      data.push(Visualization.formatRow(dataArray, i)[choice])
+    if(choice === 'x'){
+      for (const i in dataArray){
+        data.push(Visualization.formatRow(dataArray, i)[this.xChoice])
+      }
+    } else if (choice === 'y'){
+      for (const i in dataArray){
+        data.push(Visualization.formatRow(dataArray, i)[this.yChoice])
+      }
     }
     return data
   }
 
-  static getDataSetFromId(datasetId){
-    return Dataset.all.find(e => e.id === datasetId)
-  }
+  static getDataSetFromId = (datasetId) => Dataset.all.find(e => e.id === datasetId)
 
-  static makeArrayFromDataset(dataset){
-    return dataset.contents.replaceAll('\"', '').replace('[[', '[').split('],')
-  }
+  static makeArrayFromDataset = dataset => dataset.contents.replaceAll('\"', '').replace('[[', '[').split('],')
 
-  static formatRow(datasetArray, i){
-    return datasetArray[i].replace('[','').replaceAll(' ','').split(',')
-  }
+  static formatRow = (datasetArray, i) => datasetArray[i].replace('[','').replaceAll(' ','').split(',')
 
 }
