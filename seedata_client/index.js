@@ -9,8 +9,36 @@ const headerHolder = document.getElementById('header-holder')
 const blurArea = document.getElementById('blur')
 const datasetButton = document.getElementById('new-dataset-button')
 
+const searchBarContainer = document.getElementById('search-bar-container')
+
 // get current datasets and visualizations (datasets called within visualizations to avoid race conditions)
 visualizationService.getVisualizations()
+
+// load search bar onto page
+function loadSearchBar(){
+  const searchForm = document.createElement('form')
+  searchForm.innerHTML += `
+    Search for a Visualization: <input type='text' id='search-bar'>
+  `
+  searchBarContainer.append(searchForm)
+}
+
+// calling for a load of the search bar
+loadSearchBar()
+
+// listening for changes to the search bar
+searchBarContainer.firstElementChild.addEventListener('input', handleSearchBarChange)
+
+// handling search bar changes
+function handleSearchBarChange(){
+  const input = event.target.value.replace(' ','-').toLowerCase()
+  const displayVis = Visualization.all.filter(visualization => visualization.name.slice(0, input.length) === input)
+  const displayDivs = displayVis.map(visualization => `vis-card-${visualization.id}`)
+  Visualization.visCardContainer.innerHTML = ''
+  displayVis.forEach(visualization => {
+    visualization.addToDom()
+  })
+}
 
 // handling dataset clicks
 Dataset.datasetDropdown.addEventListener('change', handleDatasetSelect)

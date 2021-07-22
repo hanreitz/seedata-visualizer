@@ -20,6 +20,9 @@ class VisualizationService {
     })
   }
 
+  // Show action (for search)
+  
+
   // Create/Post action
 
   createVisualization(){

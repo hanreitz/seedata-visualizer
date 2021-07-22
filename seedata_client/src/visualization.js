@@ -22,22 +22,24 @@ class Visualization {
   }
 
   visualizationElement(){
-    if(this.chartType != 'table'){
-    this.element.innerHTML += `
-      <svg id='visualization-${this.id}'></svg>
-    `
+    if(this.element.innerHTML === ''){
+      this.element.innerHTML += `
+        <svg id='visualization-${this.id}'></svg>
+      `
     }
     return this.element
   }
 
   addToDom(){
-    Visualization.visCardContainer.appendChild(this.visualizationElement())
     if(this.chartType === 'table'){
       const renderTarget = this.element
       this.renderVisualization(this.name, 0.35, renderTarget) 
     } else {
+      Visualization.visCardContainer.append(this.visualizationElement())
       const renderTarget = this.element.firstElementChild
-      this.renderVisualization(this.name, 0.35, renderTarget) 
+      if(renderTarget.innerHTML === ''){
+       this.renderVisualization(this.name, 0.35, renderTarget) 
+      }
     } 
   }
 
@@ -129,18 +131,20 @@ class Visualization {
     } else if(targetDiv.parentElement === Visualization.visCardContainer || targetDiv === Visualization.visCardContainer){
       const visId = parseInt(targetDiv.id.split('-')[2])
       const visualization = Visualization.all.find(v => v.id === visId)
-      const visPopup = document.getElementById('vis-popup')
-      visPopup.innerHTML = ''
-      visPopup.dataset.id = visId
-      blurArea.classList.toggle('active')
-      Visualization.visualizationContainer.classList.toggle('active')
-      visualization.renderVisualization(visualization.name, 1, visPopup)
-      const deleteButton = document.createElement('button')
-      deleteButton.id = 'delete-button'
-      deleteButton.dataset.id = visId
-      deleteButton.type = 'submit'
-      deleteButton.innerText = 'Delete Visualization'
-      Visualization.visualizationContainer.append(deleteButton)
+      if(visualization != undefined){
+        const visPopup = document.getElementById('vis-popup')
+        visPopup.innerHTML = ''
+        visPopup.dataset.id = visId
+        blurArea.classList.toggle('active')
+        Visualization.visualizationContainer.classList.toggle('active')
+        visualization.renderVisualization(visualization.name, 1, visPopup)
+        const deleteButton = document.createElement('button')
+        deleteButton.id = 'delete-button'
+        deleteButton.dataset.id = visId
+        deleteButton.type = 'submit'
+        deleteButton.innerText = 'Delete Visualization'
+        Visualization.visualizationContainer.append(deleteButton)
+      }
     } else if (targetDiv === Visualization.visualizationContainer && targetDiv.firstElementChild.tagName === 'TABLE'){
       const visId = parseInt(targetDiv.firstElementChild.dataset.id)
       targetDiv.innerHTML = ''
@@ -511,7 +515,7 @@ class Visualization {
 
   static getDataSetFromId = (datasetId) => Dataset.all.find(e => e.id === datasetId)
 
-  static makeArrayFromDataset = dataset => dataset.contents.replaceAll('\"', '').replace('[[', '[').split('],')
+  static makeArrayFromDataset = (dataset) => dataset.contents.replaceAll('\"', '').replace('[[', '[').split('],')
 
   static formatRow = (datasetArray, i) => datasetArray[i].replace('[','').replaceAll(' ','').split(',')
 

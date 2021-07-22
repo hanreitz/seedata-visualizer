@@ -22,7 +22,7 @@ class DatasetService {
 // Create action
 
   createDataset(){
-    let formData = new FormData() 
+    const formData = new FormData() 
     formData.append('name', document.getElementById("dataset-name").value)
     formData.append('description', document.getElementById("dataset-description").value)
     formData.append('contents', document.getElementById("dataset-upload").files[0])
